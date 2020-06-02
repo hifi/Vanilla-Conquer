@@ -402,6 +402,9 @@ COORDINATE Coord_Scatter(COORDINATE coord, unsigned distance, bool lock)
 
 int __cdecl calcx(signed short param1, short distance)
 {
+#warning "FIXME stub"
+    return 0;
+#if 0
 	__asm {
 
 		//#pragma aux calcx parm [ax] [bx] \
@@ -415,11 +418,15 @@ int __cdecl calcx(signed short param1, short distance)
 		mov	ah, dl
 		cwd
 	}
+#endif
 }
 
 
 int __cdecl calcy(signed short param1, short distance)
 {
+#warning "FIXME stub"
+    return 0;
+#if 0
 	__asm {
 
 		//#pragma aux calcy parm [ax] [bx] \
@@ -434,6 +441,7 @@ int __cdecl calcy(signed short param1, short distance)
 		cwd
 		neg	eax
 	}
+#endif
 }
 
 

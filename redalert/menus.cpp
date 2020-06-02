@@ -54,7 +54,7 @@ PRIVATE int MenuUpdate=1;
 PRIVATE int MenuSkip;
 
 #ifdef FIXIT_VERSION_3
-#include "WolStrng.h"
+#include "wolstrng.h"
 #endif
 
 /*=========================================================================*/

@@ -35,6 +35,7 @@
 #ifndef PK_H
 #define PK_H
 
+#include <string.h>
 #include	"int.h"
 
 /*

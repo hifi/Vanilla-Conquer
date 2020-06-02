@@ -38,6 +38,7 @@
 #include "object.h"
 #include	"fly.h"
 #include	"fuse.h"
+#include	"type.h"
 
 
 class BulletClass :	public ObjectClass,

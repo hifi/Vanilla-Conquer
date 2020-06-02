@@ -49,6 +49,8 @@ typedef int bool;
 #endif
 #endif
 
+#include	<stdlib.h>
+
 //#pragma warning 604 9
 //#pragma warning 595 9
 

@@ -121,6 +121,10 @@ UnitTypeClass      ³   BuildingTypeClass      ³  VesselTypeClass
 #include	"watcom.h"
 #include "lint.h"
 
+#warning "FIXME stub"
+int min(int a, int b);
+int max(int a, int b);
+
 
 #ifdef WIN32
 //#define WIN32_LEAN_AND_MEAN

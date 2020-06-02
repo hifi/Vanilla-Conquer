@@ -32,7 +32,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include	"function.h"
-#include "SidebarGlyphx.h"
+#include "sidebarglyphx.h"
 
 
 /*

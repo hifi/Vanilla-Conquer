@@ -184,11 +184,11 @@ class DynamicVectorClass : public VectorClass<T>
 /**************************************************************************
 **	A fixed-size array of dynamic vectors.
 */
-template<class T, int COUNT, int FIRST = 0, int DEFAULT = FIRST>
+template<class T, int TCOUNT, int FIRST = 0, int DEFAULT = FIRST>
 class DynamicVectorArrayClass
 {
 public:
-	static const int COUNT = COUNT;
+	static const int COUNT = TCOUNT;
 
 	DynamicVectorArrayClass() : Active(DEFAULT) {}
 
@@ -539,7 +539,7 @@ template<class T>
 int DynamicVectorClass<T>::Add(T const & object)
 {
 	if (ActiveCount >= (int)Length()) {
-		if ((IsAllocated || !VectorMax) && GrowthStep > 0) {
+		if ((this->IsAllocated || !this->VectorMax) && GrowthStep > 0) {
 			if (!Resize(Length() + GrowthStep)) {
 
 				/*
@@ -586,7 +586,7 @@ template<class T>
 int DynamicVectorClass<T>::Add_Head(T const & object)
 {
 	if (ActiveCount >= (int)Length()) {
-		if ((IsAllocated || !VectorMax) && GrowthStep > 0) {
+		if ((this->IsAllocated || !this->VectorMax) && GrowthStep > 0) {
 			if (!Resize(Length() + GrowthStep)) {
 
 				/*

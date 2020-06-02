@@ -32,8 +32,8 @@
 */
 
 #include "gbuffer.h"
-#include "MISC.H"
-#include "WSA.H"
+#include "misc.h"
+#include "wsa.h"
 
 IconCacheClass::IconCacheClass (void)
 {

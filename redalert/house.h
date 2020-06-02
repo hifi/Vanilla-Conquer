@@ -38,7 +38,8 @@
 #include	"type.h"
 #include	"region.h"
 #include	"vector.h"
-#include "Credits.h"
+#include "credits.h"
+#include "super.h"
 
 class TriggerClass;
 class FootClass;

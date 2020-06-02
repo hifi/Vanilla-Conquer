@@ -35,6 +35,7 @@
 #ifndef LIST_H
 #define LIST_H
 
+#include "externs.h"
 #include "control.h"
 #include "shapebtn.h"
 #include "slider.h"
