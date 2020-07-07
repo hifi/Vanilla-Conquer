@@ -53,7 +53,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
-#include "common/filepcx.h"
+#include <filepcx.h>
 #include <io.h>
 
 /*

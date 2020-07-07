@@ -16,7 +16,7 @@
 #include "function.h"
 #include <ctype.h>
 #include <string.h>
-#include "common/wwfile.h"
+#include "wwfile.h"
 #include "xstraw.h"
 #include "readline.h"
 

@@ -1061,7 +1061,7 @@ void MapEditClass::AI(KeyNumType& input, int x, int y)
                     }
                 }
             }
-            LastClickTime = WinTickCount();
+            LastClickTime = TickCount();
             input = KN_NONE;
         } else {
 

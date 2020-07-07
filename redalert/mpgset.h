@@ -20,7 +20,7 @@
 
 #ifdef DVD
 #include "mci.h"
-#include "common/rawfile.h"
+#include "rawfile.h"
 
 class MPGSettings
 {

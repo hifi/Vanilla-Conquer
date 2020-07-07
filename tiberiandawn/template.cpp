@@ -46,7 +46,6 @@
 
 #include "function.h"
 #include "template.h"
-#include "tile.h"
 
 /*
 ** This contains the value of the Virtual Function Table Pointer

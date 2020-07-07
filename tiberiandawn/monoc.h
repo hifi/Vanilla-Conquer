@@ -35,6 +35,9 @@
 #ifndef MONOC_H
 #define MONOC_H
 
+//#include	"dpmi.h"
+//#include	"function.h"
+
 class MonoClass
 {
     /*
@@ -177,6 +180,7 @@ private:
     /*
     **	This is the segment/selector of the monochrome screen.
     */
+    //		static DOSSegmentClass MonoSegment;
     static void* MonoSegment;
 
     /*
@@ -198,6 +202,8 @@ private:
     */
     static int Enabled;
 };
+
+// extern int cdecl Mono_Printf(int string, ...);
 
 void Mono_Set_Cursor(int x, int y);
 int Mono_Printf(char const* string, ...);

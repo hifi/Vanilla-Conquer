@@ -1,9 +1,9 @@
 #include "soundint.h"
 #include "auduncmp.h"
 #include "soscomp.h"
-#include "memflag.h"
-#include "file.h"
-#include "audio.h"
+#include "../redalert/win32lib/memflag.h"
+#include "../redalert/win32lib/file.h"
+#include "../tiberiandawn/win32lib/audio.h"
 #include <algorithm>
 #include <math.h>
 #include <stdint.h>
@@ -914,10 +914,6 @@ void Stop_Sample(int index)
 
 BOOL Sample_Status(int index)
 {
-    if (index < 0) {
-        return false;
-    }
-
     if (AudioDone) {
         return false;
     }
@@ -937,7 +933,7 @@ BOOL Sample_Status(int index)
     }
 
     DumpBuffer = st->PlayBuffer;
-    DWORD status = 0;
+    DWORD status;
 
     if (DumpBuffer->GetStatus(&status) != DS_OK) {
         //CCDebugString("Sample_Status - GetStatus failed");

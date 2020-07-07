@@ -52,7 +52,6 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
-#include "tile.h"
 
 #define MCW MAP_CELL_W
 int const MapClass::RadiusOffset[] = {

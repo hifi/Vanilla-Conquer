@@ -63,33 +63,6 @@ set(COMMON_SRC
     common/soscodec.c
     common/winasm.c
     common/wwmouse.c
-    common/alloc.cpp
-    common/buffer.cpp
-    common/gbuffer.cpp
-    common/tobuff.asm
-    common/font.cpp
-    common/timer.cpp
-    common/timerdwn.cpp
-    common/palette.cpp
-    common/buffglbl.cpp
-    common/ddraw.cpp
-    common/iff.cpp
-    common/load.cpp
-    common/loadfont.cpp
-    common/loadpal.cpp
-    common/mouseww.cpp
-    common/dipthong.cpp
-    common/wsa.cpp
-    common/_diptabl.cpp
-    common/drawrect.cpp
-    common/set_font.cpp
-    common/rawfile.cpp
-    common/getshape.cpp
-    common/timerini.cpp
-    common/windows.cpp
-    common/winhide.cpp
-    common/writepcx.cpp
-    common/delay.cpp
 )
 
 file(GLOB_RECURSE COMMON_HEADERS "common/*.h")
@@ -108,6 +81,7 @@ if(BUILD_VANILLATD OR BUILD_VANILLARA)
 endif()
 
 set(TIBDAWN_SRC
+    tiberiandawn/win32lib/tobuff.asm
     tiberiandawn/keyfbuff.asm
     tiberiandawn/txtprnt.asm
     tiberiandawn/aadata.cpp
@@ -227,6 +201,7 @@ set(TIBDAWN_SRC
     tiberiandawn/radar.cpp
     tiberiandawn/radio.cpp
     tiberiandawn/rand.cpp
+    tiberiandawn/rawfile.cpp
     tiberiandawn/reinf.cpp
     tiberiandawn/rules.cpp
     tiberiandawn/saveload.cpp
@@ -267,13 +242,37 @@ set(TIBDAWN_SRC
     tiberiandawn/utracker.cpp
     tiberiandawn/vector.cpp
     tiberiandawn/visudlg.cpp
-    tiberiandawn/iconset.cpp
-    tiberiandawn/wwkeyboard.cpp
-    tiberiandawn/morphpal.cpp
-    tiberiandawn/newdel.cpp
-    tiberiandawn/regionsz.cpp
+    tiberiandawn/win32lib/alloc.cpp
+    tiberiandawn/win32lib/buffer.cpp
+    tiberiandawn/win32lib/buffglbl.cpp
+    tiberiandawn/win32lib/ddraw.cpp
+    tiberiandawn/win32lib/dipthong.cpp
+    tiberiandawn/win32lib/drawrect.cpp
+    tiberiandawn/win32lib/font.cpp
+    tiberiandawn/win32lib/gbuffer.cpp
+    tiberiandawn/win32lib/getshape.cpp
+    tiberiandawn/win32lib/iconset.cpp
+    tiberiandawn/win32lib/iff.cpp
+    tiberiandawn/win32lib/keyboard.cpp
+    tiberiandawn/win32lib/load.cpp
+    tiberiandawn/win32lib/loadfont.cpp
+    tiberiandawn/win32lib/loadpal.cpp
+    tiberiandawn/win32lib/mem.cpp
+    tiberiandawn/win32lib/morphpal.cpp
+    tiberiandawn/win32lib/mouseww.cpp
+    tiberiandawn/win32lib/newdel.cpp
+    tiberiandawn/win32lib/palette.cpp
+    tiberiandawn/win32lib/regionsz.cpp
+    tiberiandawn/win32lib/set_font.cpp
+    tiberiandawn/win32lib/timer.cpp
+    tiberiandawn/win32lib/timerdwn.cpp
+    tiberiandawn/win32lib/timerini.cpp
+    tiberiandawn/win32lib/windows.cpp
+    tiberiandawn/win32lib/winhide.cpp
+    tiberiandawn/win32lib/writepcx.cpp
+    tiberiandawn/win32lib/wsa.cpp
+    tiberiandawn/win32lib/_diptabl.cpp
     tiberiandawn/winstub.cpp
-    tiberiandawn/mem.cpp
 )
 
 if(CMAKE_CONFIGURATION_TYPES)
@@ -316,7 +315,7 @@ if(BUILD_VANILLATD)
     add_executable(VanillaTD ${TIBDAWN_SRC} ${TIBDAWN_HEADERS})
     target_compile_definitions(VanillaTD PUBLIC TRUE_FALSE_DEFINED WIN32 $<$<CONFIG:DEBUG>:_DEBUG> _WINDOWS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
     target_include_directories(VanillaTD PUBLIC . tiberiandawn/win32lib tiberiandawn)
-    target_link_libraries(VanillaTD commonv wsock32 ws2_32 winmm ${STATIC_LIBS})
+    target_link_libraries(VanillaTD commonv wsock32 ws2_32 winmm ddraw dxguid ${STATIC_LIBS})
     set_target_properties(VanillaTD PROPERTIES OUTPUT_NAME vanillatd)
     if(MAP_EDITORTD)
         target_compile_definitions(VanillaTD PUBLIC SCENARIO_EDITOR CHEAT_KEYS VIRGIN_CHEAT_KEYS)
@@ -330,6 +329,7 @@ endif()
 set(REDALERT_SRC
     redalert/lcwcomp.asm
     redalert/txtprnt.asm
+    redalert/win32lib/tobuff.asm
     redalert/keyfbuff.asm
     redalert/_wsproto.cpp
     redalert/2keyfram.cpp
@@ -486,6 +486,9 @@ set(REDALERT_SRC
     redalert/msgbox.cpp
     redalert/msglist.cpp
     redalert/netdlg.cpp
+    redalert/nullconn.cpp
+    redalert/nulldlg.cpp
+    redalert/nullmgr.cpp
     redalert/object.cpp
     redalert/odata.cpp
     redalert/options.cpp
@@ -504,6 +507,7 @@ set(REDALERT_SRC
     redalert/ramfile.cpp
     redalert/rand.cpp
     redalert/random.cpp
+    redalert/rawfile.cpp
     redalert/rawolapi.cpp
     redalert/readline.cpp
     redalert/rect.cpp
@@ -572,7 +576,30 @@ set(REDALERT_SRC
     redalert/w95trace.cpp
     redalert/warhead.cpp
     redalert/weapon.cpp
-    redalert/iconset.cpp
+    redalert/win32lib/alloc.cpp
+    redalert/win32lib/buffer.cpp
+    redalert/win32lib/buffglbl.cpp
+    redalert/win32lib/ddraw.cpp
+    redalert/win32lib/delay.cpp
+    redalert/win32lib/dipthong.cpp
+    redalert/win32lib/drawrect.cpp
+    redalert/win32lib/font.cpp
+    redalert/win32lib/gbuffer.cpp
+    redalert/win32lib/getshape.cpp
+    redalert/win32lib/iconset.cpp
+    redalert/win32lib/iff.cpp
+    redalert/win32lib/load.cpp
+    redalert/win32lib/loadfont.cpp
+    redalert/win32lib/mouseww.cpp
+    redalert/win32lib/palette.cpp
+    redalert/win32lib/set_font.cpp
+    redalert/win32lib/timer.cpp
+    redalert/win32lib/timerdwn.cpp
+    redalert/win32lib/timerini.cpp
+    redalert/win32lib/windows.cpp
+    redalert/win32lib/winhide.cpp
+    redalert/win32lib/writepcx.cpp
+    redalert/win32lib/_diptabl.cpp
     redalert/winstub.cpp
     redalert/wolapiob.cpp
     redalert/woledit.cpp
@@ -631,7 +658,7 @@ if(BUILD_VANILLARA)
     add_executable(VanillaRA ${REDALERT_SRC} ${REDALERT_HEADERS})
     target_compile_definitions(VanillaRA PUBLIC TRUE_FALSE_DEFINED ENGLISH WIN32 $<$<CONFIG:DEBUG>:_DEBUG> _WINDOWS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE WINSOCK_IPX)
     target_include_directories(VanillaRA PUBLIC . redalert/win32lib redalert)
-    target_link_libraries(VanillaRA commonv wsock32 ws2_32 winmm ${STATIC_LIBS})
+    target_link_libraries(VanillaRA commonv wsock32 ws2_32 winmm ddraw dxguid ${STATIC_LIBS})
     set_target_properties(VanillaRA PROPERTIES OUTPUT_NAME vanillara)
     if(MAP_EDITORRA)
         target_compile_definitions(VanillaRA PUBLIC SCENARIO_EDITOR INTERNAL_VERSION)

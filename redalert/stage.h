@@ -35,9 +35,6 @@
 #ifndef STAGE_H
 #define STAGE_H
 
-#include "ftimer.h"
-#include "jshell.h"
-
 class StageClass
 {
 

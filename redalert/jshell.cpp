@@ -41,7 +41,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
-#include "common/wwfile.h"
+#include "wwfile.h"
 
 /***********************************************************************************************
  * Small_Icon -- Create a small icon from a big one.                                           *

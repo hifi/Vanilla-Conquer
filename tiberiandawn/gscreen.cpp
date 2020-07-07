@@ -46,7 +46,7 @@
 
 #include "function.h"
 
-#include "common/filepcx.h"
+#include <filepcx.h>
 
 GadgetClass* GScreenClass::Buttons = 0;
 

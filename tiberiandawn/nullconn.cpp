@@ -39,7 +39,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
-#include "common/wincomm.h"
+#include "wincomm.h"
 #include "tcpip.h"
 
 // PG_TO_FIX

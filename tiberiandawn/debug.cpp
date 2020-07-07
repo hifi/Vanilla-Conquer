@@ -36,7 +36,7 @@
 
 #include "function.h"
 #include <stdarg.h>
-#include "common/filepcx.h"
+#include <filepcx.h>
 #include <io.h>
 #ifdef CHEAT_KEYS
 
