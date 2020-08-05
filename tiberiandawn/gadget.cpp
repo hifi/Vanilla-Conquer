@@ -54,7 +54,6 @@
 
 #include "function.h"
 #include "common/filepcx.h"
-#include <io.h>
 
 /*
 **	This records the current gadget the the gadget system is "stuck on". Such a

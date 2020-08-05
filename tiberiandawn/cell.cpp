@@ -2075,7 +2075,7 @@ bool CellClass::Goodie_Check(FootClass* object)
                 }
 
                 while (what == -1) {
-                    what = _what[Random_Pick((unsigned)0, sizeof(_what) / sizeof(_what[0]) - 1)];
+                    what = _what[Random_Pick((unsigned long int)0, (unsigned long int )sizeof(_what) / sizeof(_what[0]) - 1)];
 
                     if (what == REVEAL && object->House->IsVisionary)
                         what = -1;
@@ -2247,7 +2247,7 @@ bool CellClass::Goodie_Check(FootClass* object)
                                                   INFANTRY_E5,
                                                   INFANTRY_E7,
                                                   INFANTRY_RAMBO};
-                    InfantryTypeClass::As_Reference(_inf[Random_Pick((unsigned)0, sizeof(_inf) / sizeof(_inf[0]) - 1)])
+                    InfantryTypeClass::As_Reference(_inf[Random_Pick((unsigned long int)0, (unsigned long int)sizeof(_inf) / sizeof(_inf[0]) - 1)])
                         .Create_And_Place(Cell_Number(), object->Owner());
                 }
                 return (false);

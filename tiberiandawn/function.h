@@ -93,16 +93,6 @@ Map(screen) class heirarchy.
 **	November of '94. Until the compiler supports this, use the following
 **	definition.
 */
-#if (0)
-#ifndef TRUE_FALSE_DEFINED
-          enum {
-              false = 0,
-              true = 1
-          };
-typedef int bool;
-#define TRUE_FALSE_DEFINED
-#endif // TRUE_FALSE_DEFINED
-#endif
 
 #ifdef NOMINMAX
 inline int min(int a, int b)
@@ -116,15 +106,13 @@ inline int max(int a, int b)
 }
 #endif
 
-//#define _WIN32
-//#define WIN32 =1	//_LEAN_AND_MEAN
-#include <windows.h>
-
-#ifndef NETWORKING
+#if !defined(NETWORKING) && defined(_WIN32)
 #define htonl(x) x
 #define htons(x) x
 #define ntohl(x) x
 #define ntohs(x) x
+#else
+#include <arpa/inet.h>
 #endif
 
 /**********************************************************************
@@ -153,14 +141,46 @@ typedef struct
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
-//#include	<mem.h>
-//#include	<dos.h>
-#include <direct.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <assert.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <direct.h>
 #include <process.h>
-//#include	<new.h>
+#else
+#define _MAX_FNAME 32
+#define _MAX_EXT 8
+#define _MAX_PATH 255
+#define MAX_PATH _MAX_PATH
+#define stricmp strcasecmp
+#define _stricmp strcasecmp
+#define strnicmp strncasecmp
+#define memicmp strncasecmp
+inline void _makepath(char *path, const char *drive, const char *dir, const char *fname, const char *ext)
+{
+    sprintf(path, "%s.%s", fname, ext);
+}
+inline void _splitpath(char *path, const char *drive, const char *dir, const char *fname, const char *ext)
+{
+    // FIXME: lol
+    for (int i = 0; i < strlen(path); i++)
+        if (path[i] == '.')
+            return path + i + 1;
+
+    return path;
+}
+inline char* strupr(char *str)
+{
+    for (int i = 0; i < strlen(str); i++)
+        str[i] = toupper(str[i]);
+    return str;
+}
+inline void strrev(char *str)
+{
+}
+#endif
 
 /*
 **	VQ player specific includes.
@@ -415,7 +435,7 @@ void Shake_The_Screen(int shakes, HousesType house = HOUSE_NONE);
 */
 #define SIZE_OF_PALETTE 256
 extern "C" unsigned char* InterpolationPalette;
-extern BOOL InterpolationPaletteChanged;
+extern bool InterpolationPaletteChanged;
 extern void Interpolate_2X_Scale(GraphicBufferClass* source, GraphicViewPortClass* dest, char const* palette_file_name);
 void Read_Interpolation_Palette(char const* palette_file_name);
 void Write_Interpolation_Palette(char const* palette_file_name);
@@ -427,7 +447,7 @@ void Increase_Palette_Luminance(unsigned char* InterpolationPalette,
 extern "C" {
 extern unsigned char PaletteInterpolationTable[SIZE_OF_PALETTE][SIZE_OF_PALETTE];
 extern unsigned char* InterpolationPalette;
-void __cdecl Asm_Create_Palette_Interpolation_Table(void);
+void Asm_Create_Palette_Interpolation_Table(void);
 }
 
 /*
@@ -475,7 +495,7 @@ void Conquer_Clip_Text_Print(char const*,
                              unsigned width = -1,
                              int const* tabs = 0);
 void Draw_Box(int x, int y, int w, int h, BoxStyleEnum up, bool filled);
-int __cdecl Dialog_Message(char* errormsg, ...);
+int Dialog_Message(char* errormsg, ...);
 void Window_Box(WindowNumberType window, BoxStyleEnum style);
 void Fancy_Text_Print(char const* text, unsigned x, unsigned y, unsigned fore, unsigned back, TextPrintType flag, ...);
 void Fancy_Text_Print(int text, unsigned x, unsigned y, unsigned fore, unsigned back, TextPrintType flag, ...);
@@ -565,7 +585,7 @@ void* Conquer_Build_Translucent_Table(void const* palette, TLucentType const* co
 #ifdef __cplusplus
 extern "C" {
 #endif
-long __cdecl Buffer_Frame_To_Page(int x, int y, int w, int h, void* Buffer, GraphicViewPortClass& view, int flags, ...);
+long Buffer_Frame_To_Page(int x, int y, int w, int h, void* Buffer, GraphicViewPortClass& view, int flags, ...);
 #ifdef __cplusplus
 }
 #endif
@@ -748,8 +768,6 @@ void Call_Back_Delay(int time);
 int Alloc_Object(ScoreAnimClass* obj);
 extern GraphicBufferClass* PseudoSeenBuff;
 
-void Window_Dialog_Box(HANDLE hinst, LPCTSTR lpszTemplate, HWND hwndOwner, DLGPROC dlgprc);
-
 /*
 **	SPECIAL.CPP
 */
@@ -761,11 +779,11 @@ void Special_Dialog(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
-void __cdecl Remove_From_List(void** list, int* index, void* ptr);
-void* __cdecl Conquer_Build_Fading_Table(void const* palette, void* dest, int color, int frac);
-void __cdecl Fat_Put_Pixel(int x, int y, int color, int size, GraphicViewPortClass&);
-void __cdecl strtrim(char* buffer);
-long __cdecl Get_EAX(void);
+void Remove_From_List(void** list, int* index, void* ptr);
+void* Conquer_Build_Fading_Table(void const* palette, void* dest, int color, int frac);
+void Fat_Put_Pixel(int x, int y, int color, int size, GraphicViewPortClass&);
+void strtrim(char* buffer);
+long Get_EAX(void);
 #ifdef __cplusplus
 }
 #endif
@@ -1005,7 +1023,7 @@ extern "C" void ModeX_Blit(GraphicBufferClass* source);
 extern void Colour_Debug(int call_number);
 
 extern unsigned char* InterpolatedPalettes[100];
-extern BOOL PalettesRead;
+extern bool PalettesRead;
 extern unsigned PaletteCounter;
 
 extern "C" {
@@ -1014,7 +1032,7 @@ extern unsigned char* InterpolationPalette;
 }
 
 extern void Free_Interpolated_Palettes(void);
-extern int Load_Interpolated_Palettes(char const* filename, BOOL add = FALSE);
+extern int Load_Interpolated_Palettes(char const* filename, bool add = false);
 
 #define CELL_BLIT_ONLY 1
 #define CELL_DRAW_ONLY 2

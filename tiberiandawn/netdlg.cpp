@@ -1030,7 +1030,7 @@ static int Net_Join_Dialog(void)
         ** we need to redraw.
         */
         if (AllSurfaces.SurfacesRestored) {
-            AllSurfaces.SurfacesRestored = FALSE;
+            AllSurfaces.SurfacesRestored = false;
             display = REDRAW_ALL;
         }
 
@@ -3129,7 +3129,7 @@ static int Net_New_Dialog(void)
         ** we need to redraw.
         */
         if (AllSurfaces.SurfacesRestored) {
-            AllSurfaces.SurfacesRestored = FALSE;
+            AllSurfaces.SurfacesRestored = false;
             display = REDRAW_ALL;
         }
 
@@ -3484,8 +3484,8 @@ static int Net_New_Dialog(void)
             If there are at least 2 players, go ahead & play; error otherwise
             ...............................................................*/
             if (MPlayerSolo || Players.Count() > 0) {
-                rc = TRUE;
-                process = FALSE;
+                rc = true;
+                process = false;
             } else {
                 WWMessageBox().Process(TXT_ONLY_ONE, TXT_OOPS, NULL);
                 display = REDRAW_ALL;
@@ -4210,6 +4210,7 @@ void Net_Reconnect_Dialog(int reconn, int fresh, int oldest_index, unsigned long
  *=============================================================================================*/
 void Wait_For_Focus(void)
 {
+#ifdef _WIN32
     CountDownTimerClass focus_timer;
     focus_timer.Set(5 * 60);
     ShowWindow(MainWindow, SW_SHOWMAXIMIZED);
@@ -4232,8 +4233,9 @@ void Wait_For_Focus(void)
 
         } while (!GameInFocus);
         CCDebugString("\n");
-        AllSurfaces.SurfacesRestored = FALSE;
+        AllSurfaces.SurfacesRestored = false;
     }
+#endif
 }
 
 /***********************************************************************************************
@@ -4476,7 +4478,7 @@ static int Net_Fake_New_Dialog(void)
         ** we need to redraw.
         */
         if (AllSurfaces.SurfacesRestored) {
-            AllSurfaces.SurfacesRestored = FALSE;
+            AllSurfaces.SurfacesRestored = false;
             display = REDRAW_ALL;
         }
 
@@ -4617,8 +4619,8 @@ static int Net_Fake_New_Dialog(void)
                 If there are at least 2 players, go ahead & play; error otherwise
                 ...............................................................*/
                 if (MPlayerSolo || Players.Count() > 0) {
-                    rc = TRUE;
-                    process = FALSE;
+                    rc = true;
+                    process = false;
                 } else {
                     WWMessageBox().Process(TXT_ONLY_ONE, TXT_OOPS, NULL);
                     display = REDRAW_ALL;
@@ -5041,7 +5043,7 @@ static int Net_Fake_Join_Dialog(void)
         ** we need to redraw.
         */
         if (AllSurfaces.SurfacesRestored) {
-            AllSurfaces.SurfacesRestored = FALSE;
+            AllSurfaces.SurfacesRestored = false;
             display = REDRAW_ALL;
         }
 

@@ -36,15 +36,15 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "function.h"
-#include <conio.h>
-#include <io.h>
 
 bool Read_Private_Config_Struct(char* profile, NewConfigType* config);
 void Delete_Swap_Files(void);
 void Print_Error_End_Exit(char* string);
 void Print_Error_Exit(char* string);
 WinTimerClass* WinTimer;
+#ifdef _WIN32
 extern void Create_Main_Window(HANDLE instance, int command_show, int width, int height);
+#endif
 
 extern int ReadyToQuit;
 void Read_Setup_Options(RawFileClass* config_file);
@@ -97,13 +97,13 @@ void CD_Test(void)
  *   03/20/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
 
-HINSTANCE ProgramInstance;
 void Move_Point(short& x, short& y, register DirType dir, unsigned short distance);
 
 void Check_Use_Compressed_Shapes(void);
 extern void DLL_Shutdown(void);
 
 #if defined REMASTER_BUILD && defined _WIN32
+HINSTANCE ProgramInstance;
 BOOL WINAPI DllMain(HINSTANCE instance, unsigned int fdwReason, void* lpvReserved)
 {
     lpvReserved;
@@ -136,6 +136,7 @@ BOOL WINAPI DllMain(HINSTANCE instance, unsigned int fdwReason, void* lpvReserve
 }
 #endif
 
+#ifdef _WIN32
 #ifdef REMASTER_BUILD
 int DLL_Startup(const char* command_line_in)
 {
@@ -284,7 +285,7 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE, char* command_line, int comman
 #endif
     if (Parse_Command_Line(argc, argv)) {
 
-        WindowsTimer = new WinTimerClass(60, FALSE);
+        WindowsTimer = new WinTimerClass(60, false);
 
         int time_test = WindowsTimer->Get_System_Tick_Count();
         Sleep(1000);
@@ -381,7 +382,9 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE, char* command_line, int comman
 
             CCDebugString("C&C95 - Creating main window.\n");
 
+#ifdef _WIN32
             Create_Main_Window(instance, command_show, ScreenWidth, ScreenHeight);
+#endif
 
             CCDebugString("C&C95 - Initialising audio.\n");
 
@@ -389,27 +392,27 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE, char* command_line, int comman
 
             Palette = new (MEM_CLEAR) unsigned char[768];
 
-            BOOL video_success = FALSE;
+            bool video_success = false;
             CCDebugString("C&C95 - Setting video mode.\n");
             /*
             ** Set 640x400 video mode. If its not available then try for 640x480
             */
 #ifdef REMASTER_BUILD
-            video_success = TRUE;
+            video_success = true;
 #else
 
             if (ScreenHeight == 400) {
                 if (Set_Video_Mode(ScreenWidth, ScreenHeight, 8)) {
-                    video_success = TRUE;
+                    video_success = true;
                 } else {
                     if (Set_Video_Mode(ScreenWidth, 480, 8)) {
-                        video_success = TRUE;
+                        video_success = true;
                         ScreenHeight = 480;
                     }
                 }
             } else {
                 if (Set_Video_Mode(ScreenWidth, ScreenHeight, 8)) {
-                    video_success = TRUE;
+                    video_success = true;
                 }
             }
 #endif
@@ -524,7 +527,7 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE, char* command_line, int comman
             CCDebugString("C&C95 - Creating mouse class.\n");
             WWMouse = new WWMouseClass(&SeenBuff, 32, 32);
             //			MouseInstalled = Install_Mouse(32,24,320,200);
-            MouseInstalled = TRUE;
+            MouseInstalled = true;
 
             /*
             ** See if we should run the intro
@@ -639,6 +642,7 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE, char* command_line, int comman
 
     return (EXIT_SUCCESS);
 }
+#endif // _WIN32
 
 /***********************************************************************************************
  * Prog_End -- Cleans up library systems in prep for game exit.                                *
@@ -655,7 +659,7 @@ int PASCAL WinMain(HINSTANCE instance, HINSTANCE, char* command_line, int comman
  * HISTORY:                                                                                    *
  *   03/20/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
-void __cdecl Prog_End(const char* why, bool fatal) // Added why and fatal parameters. ST - 6/27/2019 10:10PM
+void Prog_End(const char* why, bool fatal) // Added why and fatal parameters. ST - 6/27/2019 10:10PM
 {
     GlyphX_Debug_Print("Prog_End()");
 

@@ -61,12 +61,12 @@ unsigned TheaterShapeBufferLength = THEATER_BIG_SHAPE_BUFFER_SIZE;
 extern "C" {
 char* BigShapeBufferStart = NULL;
 char* TheaterShapeBufferStart = NULL;
-BOOL UseBigShapeBuffer = FALSE;
+bool UseBigShapeBuffer = false;
 bool IsTheaterShape = false;
 }
 char* BigShapeBufferPtr = NULL;
 int TotalBigShapes = 0;
-BOOL ReallocShapeBufferFlag = FALSE;
+bool ReallocShapeBufferFlag = false;
 bool OriginalUseBigShapeBuffer = false;
 
 char* TheaterShapeBufferPtr = NULL;
@@ -137,21 +137,23 @@ void Reallocate_Big_Shape_Buffer(void)
             return;
         }
         BigShapeBufferPtr += (unsigned)BigShapeBufferStart;
-        ReallocShapeBufferFlag = FALSE;
+        ReallocShapeBufferFlag = false;
     }
 }
 
 void Check_Use_Compressed_Shapes(void)
 {
+#ifdef _WIN32
     MEMORYSTATUS mem_info;
 
     mem_info.dwLength = sizeof(mem_info);
     GlobalMemoryStatus(&mem_info);
 
-    UseBigShapeBuffer = (mem_info.dwTotalPhys > 16 * 1024 * 1024) ? TRUE : FALSE;
+    UseBigShapeBuffer = (mem_info.dwTotalPhys > 16 * 1024 * 1024) ? true : false;
+#else
+    UseBigShapeBuffer = true;
+#endif
     OriginalUseBigShapeBuffer = UseBigShapeBuffer;
-
-    // UseBigShapeBuffer = false;
 }
 
 /***********************************************************************************************
@@ -278,7 +280,7 @@ unsigned long Build_Frame(void const* dataptr, unsigned short framenumber, void*
         ** then allocate some more.
         */
         if (((unsigned)BigShapeBufferStart + BigShapeBufferLength) - (unsigned)BigShapeBufferPtr < 128 * 1024) {
-            ReallocShapeBufferFlag = TRUE;
+            ReallocShapeBufferFlag = true;
         }
 
         /*

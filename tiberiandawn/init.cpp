@@ -43,10 +43,10 @@
 #include "function.h"
 #include "loaddlg.h"
 #include "common/tcpip.h"
-#include <conio.h>
-#include <dos.h>
 
-static HANDLE hCCLibrary;
+#ifndef _WIN32
+#include <time.h>
+#endif
 
 /****************************************
 **	Function prototypes for this module **
@@ -105,7 +105,6 @@ bool Init_Game(int, char*[])
     void const* temp_mouse_shapes;
 
     CCDebugString("C&C95 - About to load reslib.dll\n");
-    hCCLibrary = LoadLibrary("reslib.dll");
 
     /*
     **	Initialize the game object heaps.
@@ -234,7 +233,9 @@ bool Init_Game(int, char*[])
     ** Since there is no mouse shape currently available we need'
     ** to set one of our own.
     */
+#ifdef _WIN32
     ShowCursor(FALSE);
+#endif
     if (MouseInstalled) {
         temp_mouse_shapes = MixFileClass::Retrieve("MOUSE.SHP");
         if (temp_mouse_shapes) {
@@ -253,7 +254,7 @@ bool Init_Game(int, char*[])
         CCDebugString("C&C95 - About to call Keyboard::Check\n");
         Keyboard::Check();
     } while (!GameInFocus);
-    AllSurfaces.SurfacesRestored = FALSE;
+    AllSurfaces.SurfacesRestored = false;
 
     CCDebugString("C&C95 - About to load the language file\n");
     /*
@@ -377,6 +378,7 @@ bool Init_Game(int, char*[])
     /*
     ** Need to search the search paths. ST - 3/15/2019 2:18PM
     */
+#ifdef _WIN32
     const char* path = ".\\";
     char search_path[_MAX_PATH];
     char scan_path[_MAX_PATH];
@@ -422,6 +424,7 @@ bool Init_Game(int, char*[])
             break;
         }
     }
+#endif
 
 #if (0)
     struct find_t ff; // for _dos_findfirst
@@ -584,8 +587,6 @@ bool Init_Game(int, char*[])
         Show_Mouse();
     }
     Call_Back();
-    //	Window_Dialog_Box(hCCLibrary, "DIALOG_1", MainWindow, MakeProcInstance((FARPROC)Start_Game_Proc, hInstance));
-    //	if (hCCLibrary) FreeLibrary(hCCLibrary);
 
 #ifdef DEMO
     MixFileClass::Cache("DEMO.MIX");
@@ -795,14 +796,17 @@ bool Select_Game(bool fade)
     CountDownTimerClass count;
     int cd_index;
 
+#ifdef _WIN32
     MEMORYSTATUS mem_info;
     mem_info.dwLength = sizeof(mem_info);
     GlobalMemoryStatus(&mem_info);
+#endif
 
     if (Special.IsFromInstall) {
         /*
         ** Special case for machines with 12 megs or less - just play intro, no choose side screen
         */
+#ifdef _WIN32
         if (mem_info.dwTotalPhys < 12 * 1024 * 1024) {
             VisiblePage.Clear();
             Play_Movie("INTRO2", THEME_NONE, false);
@@ -811,9 +815,12 @@ bool Select_Game(bool fade)
             fade = true;
             VisiblePage.Clear();
         } else {
+#endif
             display = false;
             Show_Mouse();
+#ifdef _WIN32
         }
+#endif
     }
 
     /*
@@ -904,8 +911,8 @@ bool Select_Game(bool fade)
             ** we need to redraw.
             */
             if (AllSurfaces.SurfacesRestored) {
-                AllSurfaces.SurfacesRestored = FALSE;
-                display = TRUE;
+                AllSurfaces.SurfacesRestored = false;
+                display = true;
             }
 
             /*
@@ -973,7 +980,11 @@ bool Select_Game(bool fade)
             /*
             **	Display menu and fetch selection from player.
             */
+#ifdef _WIN32
             if (Special.IsFromInstall && mem_info.dwTotalPhys >= 12 * 1024 * 1024) {
+#else
+            if (Special.IsFromInstall) {
+#endif
                 selection = SEL_START_NEW_GAME;
                 Theme.Queue_Song(THEME_NONE);
             }
@@ -1412,7 +1423,11 @@ bool Select_Game(bool fade)
     ** back a recording, init the Seed to a random value.
     */
     if (GameToPlay == GAME_NORMAL && !PlaybackGame) {
+#ifdef _WIN32
         srand(timeGetTime());
+#else
+        srand(time(NULL));
+#endif
         // randomize();
         Seed = rand();
     }
@@ -1524,7 +1539,7 @@ bool Select_Game(bool fade)
     Hide_Mouse();
     Hide_Mouse();
     Hide_Mouse();
-    WWMouse->Erase_Mouse(&HidPage, TRUE);
+    WWMouse->Erase_Mouse(&HidPage, true);
 
     Fade_Palette_To(BlackPalette, FADE_PALETTE_MEDIUM, Call_Back);
     HiddenPage.Clear();

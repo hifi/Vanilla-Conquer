@@ -32,6 +32,8 @@
 #ifndef PLAYCD_H
 #define PLAYCD_H
 
+#include <string.h>
+
 #ifdef NOT_FOR_WIN95
 /* ==================================================================== */
 /* Defines */
@@ -187,8 +189,9 @@ protected:
     int CDIndex;
 
 public:
-    GetCDClass(VOID)
+    GetCDClass()
     {
+#ifdef _WIN32
         char* _path = "a:\\";
         char drive[4];
 
@@ -204,9 +207,10 @@ public:
                 CDDrives[CDCount++] = i - 'A';
             }
         }
+#endif
     }
 
-    ~GetCDClass(VOID)
+    ~GetCDClass()
     {
     }
     inline int Get_First_CD_Drive(void);
@@ -291,8 +295,8 @@ private:
     TinfoType Tinfo;
 
 public:
-    RedBookClass(VOID);  // This is the default constructor
-    ~RedBookClass(VOID); // This is the destructor
+    RedBookClass();  // This is the default constructor
+    ~RedBookClass(); // This is the destructor
 
     ULONG RedToHS(ULONG i);
     ULONG MSFtoRed(UBYTE m, UBYTE s, UBYTE f);

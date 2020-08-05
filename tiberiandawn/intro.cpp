@@ -104,9 +104,11 @@ void Choose_Side(void)
     int setpalette = 0;
     int gdi_start_palette;
 
+#ifdef _WIN32
     MEMORYSTATUSEX mem_info;
     mem_info.dwLength = sizeof(mem_info);
     GlobalMemoryStatusEx(&mem_info);
+#endif
 
     TextPrintBuffer = new GraphicBufferClass(SeenBuff.Get_Width(), SeenBuff.Get_Height(), (void*)NULL);
     TextPrintBuffer->Clear();
@@ -129,7 +131,11 @@ void Choose_Side(void)
     //	speechn = MixFileClass::Retrieve("NOD_SLCT.AUD");
 
     if (Special.IsFromInstall) {
+#ifdef _WIN32
         if (mem_info.ullTotalPhys >= 12 * 1024 * 1024) {
+#else
+        if (true) {
+#endif
             VisiblePage.Clear();
             PreserveVQAScreen = 1;
             Play_Movie("INTRO2", THEME_NONE, false);
@@ -140,7 +146,7 @@ void Choose_Side(void)
     // anim = Open_Animation("CHOOSE.WSA",NULL,0L,(WSAOpenType)(WSA_OPEN_FROM_MEM | WSA_OPEN_TO_PAGE),Palette);
     anim = Open_Animation("CHOOSE.WSA", NULL, 0L, (WSAOpenType)(WSA_OPEN_FROM_DISK | WSA_OPEN_TO_PAGE), Palette);
     Call_Back();
-    InterpolationPaletteChanged = TRUE;
+    InterpolationPaletteChanged = true;
     InterpolationPalette = Palette;
     Read_Interpolation_Palette("SIDES.PAL");
 
@@ -149,9 +155,9 @@ void Choose_Side(void)
     gdi_start_palette = Load_Interpolated_Palettes("NOD1PRE.VQP");
     Call_Back();
     // gdibrief = Open_Movie("GDI1.VQA");
-    Load_Interpolated_Palettes("GDI1.VQP", TRUE);
+    Load_Interpolated_Palettes("GDI1.VQP", true);
 
-    WWMouse->Erase_Mouse(&HidPage, TRUE);
+    WWMouse->Erase_Mouse(&HidPage, true);
     HiddenPage.Clear();
     PseudoSeenBuff->Clear();
     SysMemPage.Clear();
