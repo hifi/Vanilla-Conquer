@@ -1641,7 +1641,7 @@ void MapClass::Clean(void)
                         ini_name = obj->Class_Of().IniName;
                     }
 
-                    sprintf_s(debug_message,
+                    snprintf(debug_message,
                               sizeof(debug_message) - 1,
                               "Cleaned %s overlapper in cell %08X. Type=%s, IniName=%s",
                               active_fail ? "inactive" : "limbo",

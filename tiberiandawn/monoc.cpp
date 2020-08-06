@@ -49,7 +49,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef _WIN32
 #include <dos.h>
+#endif
 //#include	<mem.h>
 #include <stdarg.h>
 #include <string.h>

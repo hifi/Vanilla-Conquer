@@ -63,11 +63,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _WIN32
 #include <direct.h>
 #include <fcntl.h>
 #include <io.h>
 #include <dos.h>
 #include <share.h>
+#endif
 #include <malloc.h>
 
 #define SHAPE_TRANS 0x40
@@ -3648,6 +3650,7 @@ int Get_CD_Index(int cd_drive, int timeout)
 
     timer.Set(timeout);
 
+#ifdef _WIN32
     /*
     ** Get the volume label. If we get a 'not ready' error then retry for the timeout
     ** period.
@@ -3698,6 +3701,9 @@ int Get_CD_Index(int cd_drive, int timeout)
                 return (-1);
         }
     } while (true);
+#else
+    return 0;
+#endif
 }
 
 /***********************************************************************************************

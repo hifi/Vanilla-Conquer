@@ -106,15 +106,13 @@ inline int max(int a, int b)
 }
 #endif
 
-//#define _WIN32
-//#define WIN32 =1	//_LEAN_AND_MEAN
-#include <windows.h>
-
-#ifndef NETWORKING
+#if !defined(NETWORKING) && defined(_WIN32)
 #define htonl(x) x
 #define htons(x) x
 #define ntohl(x) x
 #define ntohs(x) x
+#else
+#include <arpa/inet.h>
 #endif
 
 /**********************************************************************
@@ -143,14 +141,46 @@ typedef struct
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
-//#include	<mem.h>
-//#include	<dos.h>
-#include <direct.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <assert.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <direct.h>
 #include <process.h>
-//#include	<new.h>
+#else
+#define _MAX_FNAME 32
+#define _MAX_EXT 8
+#define _MAX_PATH 255
+#define MAX_PATH _MAX_PATH
+#define stricmp strcasecmp
+#define _stricmp strcasecmp
+#define strnicmp strncasecmp
+#define memicmp strncasecmp
+inline void _makepath(char *path, const char *drive, const char *dir, const char *fname, const char *ext)
+{
+    sprintf(path, "%s.%s", fname, ext);
+}
+inline void _splitpath(char *path, const char *drive, const char *dir, const char *fname, const char *ext)
+{
+    // FIXME: lol
+    for (int i = 0; i < strlen(path); i++)
+        if (path[i] == '.')
+            return path + i + 1;
+
+    return path;
+}
+inline char* strupr(char *str)
+{
+    for (int i = 0; i < strlen(str); i++)
+        str[i] = toupper(str[i]);
+    return str;
+}
+inline void strrev(char *str)
+{
+}
+#endif
 
 /*
 **	VQ player specific includes.

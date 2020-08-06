@@ -39,6 +39,8 @@
 #include "function.h"
 #include "common/tcpip.h"
 
+#ifdef _WIN32
+
 void output(short, short)
 {
 }
@@ -827,3 +829,5 @@ GraphicBufferClass* Read_PCX_File(char* name, char* palette, void* Buff, long Si
     file_handle.Close();
     return pic;
 }
+
+#endif

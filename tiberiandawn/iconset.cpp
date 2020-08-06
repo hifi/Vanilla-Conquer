@@ -44,6 +44,7 @@
 #include "common/file.h"
 #include "tile.h"
 #include "common/iff.h"
+#include <string.h>
 
 // Misc? ST - 1/3/2019 10:40AM
 // extern int Misc;

@@ -41,6 +41,9 @@
 #include "common/wwkeyboard.h"
 #include "common/timer.h"
 #include "common/mono.h"
+#include <ctype.h>
+
+#ifdef _WIN32
 
 void Message_Loop(void);
 
@@ -404,6 +407,7 @@ void Message_Loop(void)
         DispatchMessageA(&msg);
     }
 }
+#endif
 
 /***************************************************************************
  * CHECK_KEY -- compatability routine for old 32 bit library               *

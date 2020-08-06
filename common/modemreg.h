@@ -13,12 +13,7 @@
 // GNU General Public License along with permitted additional restrictions
 // with this program. If not, see https://github.com/electronicarts/CnC_Remastered_Collection
 
-#ifndef WIN32
-#define WIN32
-#ifndef _WIN32 // Denzil 6/2/98 Watcom 11.0 complains without this check
-#define _WIN32
-#endif // _WIN32
-#endif // WIN32
+#ifdef _WIN32
 #include <windows.h>
 
 class ModemRegistryEntryClass
@@ -78,3 +73,5 @@ private:
     char* HardwareFlowControl;
     char* NoFlowControl;
 };
+
+#endif

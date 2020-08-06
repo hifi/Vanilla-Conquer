@@ -945,7 +945,9 @@ WWKeyboardClass Kbd;
 int ScreenWidth = GBUFF_INIT_WIDTH;
 int ScreenHeight = GBUFF_INIT_HEIGHT;
 WWMouseClass* WWMouse = NULL;
+#ifdef _WIN32
 HANDLE hInstance;
+#endif
 int AllDone;
 bool InMovie = false; // Are we currently playing a VQ movie?
 GetCDClass CDList;

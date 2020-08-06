@@ -30,6 +30,8 @@
  *-------------------------------------------------------------------------*
  * Functions:                                                              *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+#include <stddef.h>
+
 #ifndef MEMFLAG_H
 #define MEMFLAG_H
 // Memory Flags

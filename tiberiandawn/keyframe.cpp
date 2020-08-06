@@ -144,15 +144,17 @@ void Reallocate_Big_Shape_Buffer(void)
 
 void Check_Use_Compressed_Shapes(void)
 {
+#ifdef _WIN32
     MEMORYSTATUS mem_info;
 
     mem_info.dwLength = sizeof(mem_info);
     GlobalMemoryStatus(&mem_info);
 
     UseBigShapeBuffer = (mem_info.dwTotalPhys > 16 * 1024 * 1024) ? true : false;
+#else
+    UseBigShapeBuffer = true;
+#endif
     OriginalUseBigShapeBuffer = UseBigShapeBuffer;
-
-    // UseBigShapeBuffer = false;
 }
 
 /***********************************************************************************************

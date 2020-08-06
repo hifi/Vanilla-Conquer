@@ -104,9 +104,11 @@ void Choose_Side(void)
     int setpalette = 0;
     int gdi_start_palette;
 
+#ifdef _WIN32
     MEMORYSTATUSEX mem_info;
     mem_info.dwLength = sizeof(mem_info);
     GlobalMemoryStatusEx(&mem_info);
+#endif
 
     TextPrintBuffer = new GraphicBufferClass(SeenBuff.Get_Width(), SeenBuff.Get_Height(), (void*)NULL);
     TextPrintBuffer->Clear();
@@ -129,7 +131,11 @@ void Choose_Side(void)
     //	speechn = MixFileClass::Retrieve("NOD_SLCT.AUD");
 
     if (Special.IsFromInstall) {
+#ifdef _WIN32
         if (mem_info.ullTotalPhys >= 12 * 1024 * 1024) {
+#else
+        if (true) {
+#endif
             VisiblePage.Clear();
             PreserveVQAScreen = 1;
             Play_Movie("INTRO2", THEME_NONE, false);

@@ -394,7 +394,9 @@ extern int AreThingiesEnabled;
 extern WWKeyboardClass Kbd;
 extern int In_Debugger;
 extern WWMouseClass* WWMouse;
+#ifdef _WIN32
 extern HANDLE hInstance;
+#endif
 extern int AllDone;
 extern int Get_CD_Index(int cd_drive, int timeout);
 void Memory_Error_Handler(void);
