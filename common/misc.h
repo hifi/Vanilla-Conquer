@@ -172,7 +172,6 @@ long Calculate_CRC(void* buffer, long length);
 
 extern short Processor(void);
 extern short Operating_System(void);
-extern unsigned long random(unsigned long mod);
 
 /*=========================================================================*/
 /* The following prototypes are for the file: OPSYS.ASM                    */
