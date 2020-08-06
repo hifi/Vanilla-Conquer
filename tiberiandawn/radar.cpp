@@ -550,7 +550,7 @@ void RadarClass::Render_Terrain(CELL cell, int x, int y, int size)
             continue;
 
         Buffer_To_Page(0, 0, 3, 3, icon, _IconStage);
-        _IconStage.Scale(*LogicPage, 0, 0, x, y, 3, 3, ZoomFactor, ZoomFactor, TRUE, (char*)&FadingBrighten[0]);
+        _IconStage.Scale(*LogicPage, 0, 0, x, y, 3, 3, ZoomFactor, ZoomFactor, true, (char*)&FadingBrighten[0]);
     }
 }
 
@@ -638,9 +638,9 @@ void RadarClass::Render_Overlay(CELL cell, int x, int y, int size)
                 return;
             Buffer_To_Page(0, 0, 3, 3, icon, _IconStage);
             if (otype->IsTiberium) {
-                _IconStage.Scale(*LogicPage, 0, 0, x, y, 3, 3, size, size, TRUE, (char*)&FadingGreen[0]);
+                _IconStage.Scale(*LogicPage, 0, 0, x, y, 3, 3, size, size, true, (char*)&FadingGreen[0]);
             } else {
-                _IconStage.Scale(*LogicPage, 0, 0, x, y, 3, 3, size, size, TRUE, (char*)&FadingBrighten[0]);
+                _IconStage.Scale(*LogicPage, 0, 0, x, y, 3, 3, size, size, true, (char*)&FadingBrighten[0]);
             }
         }
     }
@@ -827,7 +827,7 @@ void RadarClass::Plot_Radar_Pixel(CELL cell)
 
                 unsigned char* data = (unsigned char*)ptr;
                 Buffer_To_Page(0, 0, 24, 24, data, _TileStage);
-                _TileStage.Scale(*LogicPage, 0, 0, x, y, 24, 24, ZoomFactor, ZoomFactor, TRUE);
+                _TileStage.Scale(*LogicPage, 0, 0, x, y, 24, 24, ZoomFactor, ZoomFactor, true);
 
             } else {
                 if (LogicPage->Lock()) {
@@ -1002,7 +1002,7 @@ void RadarClass::Cursor_Cell(CELL cell, int value)
         **	If we are erasing then erase the cell.
         */
         ////// ST 8/13/96 2:23PM
-        if (value == FALSE) {
+        if (value == false) {
             Plot_Radar_Pixel(cell);
             //////
         }
@@ -1148,7 +1148,7 @@ void RadarClass::Radar_Cursor(int forced)
         /*
         ** Finally mark the map (actually remove the marks that indicate the radar cursor was there
         */
-        Mark_Radar(x1, y1, x2, y2, FALSE, barlen);
+        Mark_Radar(x1, y1, x2, y2, false, barlen);
     }
 
     /*
@@ -1170,7 +1170,7 @@ void RadarClass::Radar_Cursor(int forced)
     x2 += SpecialRadarFrame;
     y2 += SpecialRadarFrame;
 
-    Mark_Radar(x1, y1, x2, y2, TRUE, barlen);
+    Mark_Radar(x1, y1, x2, y2, true, barlen);
 
     /*
     ** setup a graphic view port class so we can write all the pixels relative
@@ -1201,7 +1201,7 @@ void RadarClass::Radar_Cursor(int forced)
     draw_window.Draw_Rect(x1, y1, x2, y2, WHITE);
 #endif
 
-#if (FALSE)
+#if (0)
     if (oldpage == &SeenBuff) {
         Hide_Mouse();
         HidPage.Blit(SeenBuff,
@@ -1211,7 +1211,7 @@ void RadarClass::Radar_Cursor(int forced)
                      (int)(RadY + RadOffY + BaseY),
                      (int)draw_window.Get_Width(),
                      (int)draw_window.Get_Height(),
-                     (BOOL)FALSE);
+                     false);
 
         Show_Mouse();
     }
@@ -1219,7 +1219,7 @@ void RadarClass::Radar_Cursor(int forced)
     Set_Logic_Page(oldpage);
     _last_pos = tac_cell;
     _last_frame = SpecialRadarFrame;
-    RadarCursorRedraw = FALSE;
+    RadarCursorRedraw = false;
 }
 
 /***************************************************************************
@@ -1290,9 +1290,9 @@ void RadarClass::AI(KeyNumType& input, int x, int y)
     */
     if (IsRadarActive && Map.IsSidebarActive && SpecialRadarFrame) {
         SpecialRadarFrame--;
-        RadarCursorRedraw = TRUE;
-        IsToRedraw = TRUE;
-        Flag_To_Redraw(FALSE);
+        RadarCursorRedraw = true;
+        IsToRedraw = true;
+        Flag_To_Redraw(false);
     }
 
     /*
@@ -1568,7 +1568,7 @@ void RadarClass::Set_Radar_Position(CELL cell)
     int newcell;
 
     if (ZoomFactor != 1) {
-#if (FALSE)
+#if false
         oldx = (Cell_X(cell) - MapCellX) - (RadarCellWidth / 2);
         oldy = (Cell_Y(cell) - MapCellY) - (RadarCellHeight / 2);
 #else
@@ -1587,7 +1587,7 @@ void RadarClass::Set_Radar_Position(CELL cell)
     newcell = XY_Cell(newx, newy);
 
     if (RadarCell != newcell) {
-        int forced = FALSE;
+        bool forced = false;
         int xmod = newx;
         int ymod = newy;
 

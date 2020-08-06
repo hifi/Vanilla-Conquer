@@ -93,16 +93,6 @@ Map(screen) class heirarchy.
 **	November of '94. Until the compiler supports this, use the following
 **	definition.
 */
-#if (0)
-#ifndef TRUE_FALSE_DEFINED
-          enum {
-              false = 0,
-              true = 1
-          };
-typedef int bool;
-#define TRUE_FALSE_DEFINED
-#endif // TRUE_FALSE_DEFINED
-#endif
 
 #ifdef NOMINMAX
 inline int min(int a, int b)
@@ -415,7 +405,7 @@ void Shake_The_Screen(int shakes, HousesType house = HOUSE_NONE);
 */
 #define SIZE_OF_PALETTE 256
 extern "C" unsigned char* InterpolationPalette;
-extern BOOL InterpolationPaletteChanged;
+extern bool InterpolationPaletteChanged;
 extern void Interpolate_2X_Scale(GraphicBufferClass* source, GraphicViewPortClass* dest, char const* palette_file_name);
 void Read_Interpolation_Palette(char const* palette_file_name);
 void Write_Interpolation_Palette(char const* palette_file_name);
@@ -427,7 +417,7 @@ void Increase_Palette_Luminance(unsigned char* InterpolationPalette,
 extern "C" {
 extern unsigned char PaletteInterpolationTable[SIZE_OF_PALETTE][SIZE_OF_PALETTE];
 extern unsigned char* InterpolationPalette;
-void __cdecl Asm_Create_Palette_Interpolation_Table(void);
+void Asm_Create_Palette_Interpolation_Table(void);
 }
 
 /*
@@ -475,7 +465,7 @@ void Conquer_Clip_Text_Print(char const*,
                              unsigned width = -1,
                              int const* tabs = 0);
 void Draw_Box(int x, int y, int w, int h, BoxStyleEnum up, bool filled);
-int __cdecl Dialog_Message(char* errormsg, ...);
+int Dialog_Message(char* errormsg, ...);
 void Window_Box(WindowNumberType window, BoxStyleEnum style);
 void Fancy_Text_Print(char const* text, unsigned x, unsigned y, unsigned fore, unsigned back, TextPrintType flag, ...);
 void Fancy_Text_Print(int text, unsigned x, unsigned y, unsigned fore, unsigned back, TextPrintType flag, ...);
@@ -565,7 +555,7 @@ void* Conquer_Build_Translucent_Table(void const* palette, TLucentType const* co
 #ifdef __cplusplus
 extern "C" {
 #endif
-long __cdecl Buffer_Frame_To_Page(int x, int y, int w, int h, void* Buffer, GraphicViewPortClass& view, int flags, ...);
+long Buffer_Frame_To_Page(int x, int y, int w, int h, void* Buffer, GraphicViewPortClass& view, int flags, ...);
 #ifdef __cplusplus
 }
 #endif
@@ -761,11 +751,11 @@ void Special_Dialog(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
-void __cdecl Remove_From_List(void** list, int* index, void* ptr);
-void* __cdecl Conquer_Build_Fading_Table(void const* palette, void* dest, int color, int frac);
-void __cdecl Fat_Put_Pixel(int x, int y, int color, int size, GraphicViewPortClass&);
-void __cdecl strtrim(char* buffer);
-long __cdecl Get_EAX(void);
+void Remove_From_List(void** list, int* index, void* ptr);
+void* Conquer_Build_Fading_Table(void const* palette, void* dest, int color, int frac);
+void Fat_Put_Pixel(int x, int y, int color, int size, GraphicViewPortClass&);
+void strtrim(char* buffer);
+long Get_EAX(void);
 #ifdef __cplusplus
 }
 #endif
@@ -1005,7 +995,7 @@ extern "C" void ModeX_Blit(GraphicBufferClass* source);
 extern void Colour_Debug(int call_number);
 
 extern unsigned char* InterpolatedPalettes[100];
-extern BOOL PalettesRead;
+extern bool PalettesRead;
 extern unsigned PaletteCounter;
 
 extern "C" {
@@ -1014,7 +1004,7 @@ extern unsigned char* InterpolationPalette;
 }
 
 extern void Free_Interpolated_Palettes(void);
-extern int Load_Interpolated_Palettes(char const* filename, BOOL add = FALSE);
+extern int Load_Interpolated_Palettes(char const* filename, bool add = false);
 
 #define CELL_BLIT_ONLY 1
 #define CELL_DRAW_ONLY 2
