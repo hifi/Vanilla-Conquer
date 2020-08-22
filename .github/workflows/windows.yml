@@ -7,7 +7,7 @@ on:
     types: published
 
 jobs:
-  build:
+  win32-msvc:
     runs-on: windows-2019
     strategy:
       matrix:

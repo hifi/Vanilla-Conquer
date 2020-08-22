@@ -7,7 +7,7 @@ on:
     types: published
 
 jobs:
-  build:
+  win32-mingw:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
