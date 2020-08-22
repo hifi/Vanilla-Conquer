@@ -42,6 +42,7 @@
 #include "common/timer.h"
 #include "common/mono.h"
 
+#ifdef _WIN32
 void Message_Loop(void);
 
 WWKeyboardClass* _Kbd;
@@ -529,3 +530,5 @@ int Get_Key(void)
     }
     return (retval);
 }
+
+#endif

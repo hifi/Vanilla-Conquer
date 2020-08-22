@@ -64,11 +64,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <direct.h>
-#include <fcntl.h>
-#include <io.h>
-#include <dos.h>
-#include <share.h>
 #include <malloc.h>
 
 #define SHAPE_TRANS 0x40
@@ -3634,6 +3629,7 @@ void Error_In_Heap_Pointers(char* string)
  *=============================================================================================*/
 int Get_CD_Index(int cd_drive, int timeout)
 {
+#ifdef _WIN32
     char volume_name[128];
     unsigned filename_length;
     unsigned misc_dword;
@@ -3699,6 +3695,9 @@ int Get_CD_Index(int cd_drive, int timeout)
                 return (-1);
         }
     } while (true);
+#else
+    return -1;
+#endif
 }
 
 /***********************************************************************************************
