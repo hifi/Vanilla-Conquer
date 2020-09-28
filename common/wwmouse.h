@@ -64,6 +64,7 @@ public:
     int Get_Mouse_X(void);
     int Get_Mouse_Y(void);
     void Get_Mouse_XY(int& x, int& y);
+    void Set_Mouse_XY(int x, int y);
     //
     // The following two routines can be used to render the mouse onto a graphicbuffer
     // other than the hidpage.
@@ -120,11 +121,16 @@ private:
 
     int EraseFlags; // Records whether mutex has been released
 
+    int CurrentX;
+    int CurrentY;
+
 #ifdef _WIN32
     CRITICAL_SECTION MouseCriticalSection; // Control for mouse re-enterancy
     unsigned TimerHandle;
 #endif
 };
+
+extern WWMouseClass* _Mouse;
 
 void Hide_Mouse(void);
 void Show_Mouse(void);

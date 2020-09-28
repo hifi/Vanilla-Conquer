@@ -39,6 +39,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #include "common/wwkeyboard.h"
+#include "common/wwmouse.h"
 #include "common/timer.h"
 #include "common/mono.h"
 
@@ -414,6 +415,10 @@ void Message_Loop(void)
         TranslateMessage(&msg);
         DispatchMessageA(&msg);
     }
+
+    POINT lp;
+    GetCursorPos(&lp);
+    _Mouse->Set_Mouse_XY(lp.x, lp.y);
 #endif
 }
 
