@@ -24,7 +24,6 @@ int TimerIntCount;
 int TimerMethod;
 int VQATickCount;
 int TickOffset;
-int SuspendAudioCallback;
 int VQAAudioPaused;
 VQAHandle* AudioVQAHandle;
 
@@ -136,9 +135,9 @@ bool Queue_Audio(ALuint buffer)
     return true;
 }
 
-void __stdcall VQA_AudioCallback(UINT uID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
+void VQA_AudioCallback()
 {
-    if (!SuspendAudioCallback && !VQAAudioPaused) {
+    if (!VQAAudioPaused && AudioVQAHandle) {
         VQAConfig* config = &AudioVQAHandle->Config;
         VQAData* data = AudioVQAHandle->VQABuf;
         VQAAudio* audio = &data->Audio;
@@ -283,9 +282,6 @@ int VQA_StartAudio(VQAHandle* handle)
     alSourcef(audio->OpenALSource, AL_GAIN, config->Volume / 256.0f);
     alSourcePlay(audio->OpenALSource);
 
-    timeBeginPeriod(TIMER_DELAY);
-    audio->SoundTimerHandle = timeSetEvent(
-        TIMER_DELAY, TIMER_RESOLUTION, VQA_AudioCallback, (DWORD_PTR) nullptr, TIME_CALLBACK_FUNCTION | TIME_PERIODIC);
     audio->Flags |= VQA_AUDIO_FLAG_AUDIO_DMA_TIMER;
     AudioFlags |= VQA_AUDIO_FLAG_AUDIO_DMA_TIMER;
     return 0;
@@ -310,10 +306,6 @@ void VQA_StopAudio(VQAHandle* handle)
 
         alDeleteSources(1, &audio->OpenALSource);
         alDeleteBuffers(OPENAL_BUFFER_COUNT, audio->AudioBuffers);
-
-        timeKillEvent(audio->SoundTimerHandle);
-        timeEndPeriod(TIMER_DELAY);
-        audio->SoundTimerHandle = 0;
 
         audio->Flags &= ~VQA_AUDIO_FLAG_AUDIO_DMA_TIMER;
         AudioFlags &= ~VQA_AUDIO_FLAG_AUDIO_DMA_TIMER;
@@ -366,6 +358,8 @@ int VQA_CopyAudio(VQAHandle* handle)
     VQAConfig* config = &handle->Config;
     VQAData* data = handle->VQABuf;
     VQAAudio* audio = &data->Audio;
+
+    VQA_AudioCallback();
 
     if (config->OptionFlags & 1) {
         if (audio->Buffer != nullptr) {
