@@ -35,6 +35,7 @@
 
 #include "function.h"
 #include "common/framelimit.h"
+#include "common/gitinfo.h"
 
 /*****************************
 **	Function prototypes
@@ -859,14 +860,14 @@ int Main_Menu(unsigned long timeout)
                              TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
                              VersionText);
 #else
-            Fancy_Text_Print("V.%d%s",
+            Fancy_Text_Print("%s%s",
                              D_DIALOG_X + D_DIALOG_W - 5 * 2,
                              D_DIALOG_Y + D_DIALOG_H - 10 * 2,
-                             DKGREY,
+                             GREEN,
                              TBLACK,
-                             TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
-                             Version_Number(),
-                             VersionText);
+                             TPF_SMALL | TPF_RIGHT,
+                             GitShortSHA1,
+                             GitUncommittedChanges ? "-Dev" : "");
 #endif
 #endif
 

@@ -44,6 +44,7 @@
 #include "loaddlg.h"
 #include "common/tcpip.h"
 #include "common/vqaconfig.h"
+#include "gitinfo.h"
 #include <time.h>
 
 /****************************************
@@ -919,15 +920,14 @@ bool Select_Game(bool fade)
 
                 Set_Logic_Page(SeenBuff);
 #ifdef VIRGIN_CHEAT_KEYS
-                Fancy_Text_Print("V.%d%s",
+                Fancy_Text_Print("%s%s",
                                  SeenBuff.Get_Width() - 1,
                                  SeenBuff.Get_Height() - 10,
                                  DKGREY,
                                  TBLACK,
                                  TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
-                                 Version_Number(),
-                                 VersionText,
-                                 FOREIGN_VERSION_NUMBER);
+                                 GitShortSHA1,
+                                 GitUncommittedChanges ? "-Dev" : "");
 //				Fancy_Text_Print("V.%d%s%02d", 319, 190, DKGREY, TBLACK, TPF_6POINT|TPF_FULLSHADOW|TPF_RIGHT,
 //Version_Number(), VersionText, FOREIGN_VERSION_NUMBER);
 #else
@@ -942,14 +942,14 @@ bool Select_Game(bool fade)
                                  TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
                                  VersionText);
 #else
-                Fancy_Text_Print("V.%d%s",
+                Fancy_Text_Print("%s%s",
                                  SeenBuff.Get_Width() - 1,
                                  SeenBuff.Get_Height() - 10,
                                  DKGREY,
                                  TBLACK,
                                  TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
-                                 Version_Number(),
-                                 VersionText);
+                                 GitShortSHA1,
+                                 GitUncommittedChanges ? "-Dev" : "");
 #endif
 #endif
                 display = false;

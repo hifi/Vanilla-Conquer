@@ -44,6 +44,7 @@
 #include "textbtn.h"
 #include "confdlg.h"
 #include "common/framelimit.h"
+#include "common/gitinfo.h"
 
 void GameOptionsClass::Adjust_Variables_For_Resolution(void)
 {
@@ -263,17 +264,17 @@ void GameOptionsClass::Process(void)
                              ScenarioName,
                              VersionText);
 #else
-            Fancy_Text_Print("%s\rV.%d%s",
+            Fancy_Text_Print("%s\r%s%s",
                              (WindowList[WINDOW_EDITOR][WINDOWX] + WindowList[WINDOW_EDITOR][WINDOWWIDTH])
                                  - 3 * resfactor,
                              WindowList[WINDOW_EDITOR][WINDOWY] + WindowList[WINDOW_EDITOR][WINDOWHEIGHT]
                                  - ((GameToPlay == GAME_NORMAL) ? (32 * resfactor) : (24 * resfactor)),
-                             DKGREY,
+                             GREEN,
                              TBLACK,
-                             TPF_6POINT | TPF_NOSHADOW | TPF_RIGHT,
+                             TPF_SMALL | TPF_RIGHT,
                              ScenarioName,
-                             Version_Number(),
-                             VersionText);
+                             GitShortSHA1,
+                             GitUncommittedChanges ? "-Dev" : "");
 #endif
 
             buttons->Draw_All();
