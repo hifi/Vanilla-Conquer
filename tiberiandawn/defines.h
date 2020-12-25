@@ -1893,6 +1893,7 @@ typedef enum TextPrintType : unsigned short
     TPF_MAP = 0x0007,          // Use 6 point gradient font.
     TPF_GREEN12 = 0x0008,      // Use green tab font
     TPF_GREEN12_GRAD = 0x0009, // Use graduated green tab font
+    TPF_SMALL = 0x000A,        // USe old small score font.
     TPF_LASTSHADOW = 0x0000,   // Use previous font palette.
     TPF_NOSHADOW = 0x0010,     // Don't have any shadow.
     TPF_DROPSHADOW = 0x0020,   //	Use a simple drop shadow.

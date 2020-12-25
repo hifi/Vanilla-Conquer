@@ -362,6 +362,7 @@ void const* Font8Ptr;           // 8 point proportional.
 void const* FontLEDPtr;         // LED fixed point font.
 void const* VCRFontPtr;         // VCR font pointer.
 void const* ScoreFontPtr;       // font for score & map selection screens
+void const* SmallFontPtr;       // old font for score & map selection screens
 void const* GradFont6Ptr;       // gradient 6 point font pointer.
 
 /***************************************************************************

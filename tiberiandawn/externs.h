@@ -196,6 +196,7 @@ extern void const* Font6Ptr;
 extern void const* Font8Ptr;
 extern void const* FontLEDPtr;
 extern void const* ScoreFontPtr;
+extern void const* SmallFontPtr;
 extern void const* GradFont6Ptr;
 extern char const* SystemStrings;
 

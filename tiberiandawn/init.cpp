@@ -200,6 +200,7 @@ bool Init_Game(int, char*[])
     Font6Ptr = Load_Alloc_Data(CCFileClass("6POINT.FNT"));
     // ScoreFontPtr = MFCD::Retrieve("12GRNGRD.FNT");	//GRAD12FN");	//("SCOREFNT.FNT");
     ScoreFontPtr = Load_Alloc_Data(CCFileClass("12GRNGRD.FNT"));
+    SmallFontPtr = Load_Alloc_Data(CCFileClass("SCOREFNT.FNT"));
     FontLEDPtr = MFCD::Retrieve("LED.FNT");
     VCRFontPtr = MFCD::Retrieve("VCR.FNT");
     //	GradFont6Ptr = MFCD::Retrieve("GRAD6FNT.FNT");

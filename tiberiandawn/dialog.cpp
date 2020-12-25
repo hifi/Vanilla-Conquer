@@ -383,7 +383,8 @@ void Simple_Text_Print(char const* text, unsigned x, unsigned y, unsigned fore, 
     /*
     **	A gradient font always requires special fixups for the palette.
     */
-    if ((flag & 0xf) == TPF_6PT_GRAD || (flag & 0xf) == TPF_GREEN12_GRAD || (flag & 0xf) == TPF_GREEN12) {
+    if ((flag & 0xf) == TPF_6PT_GRAD || (flag & 0xf) == TPF_GREEN12_GRAD || (flag & 0xf) == TPF_GREEN12
+        || (flag & 0xf) == TPF_SMALL) {
         /*
         **	If a gradient palette was requested, then fill in the font palette array
         **	according to the color index specified.
@@ -398,6 +399,10 @@ void Simple_Text_Print(char const* text, unsigned x, unsigned y, unsigned fore, 
             **	forground color specified.
             */
             memset(&fontpalette[4], fore, 12);
+        }
+
+        if ((flag & 0xf) == TPF_SMALL) {
+            fontpalette[2] = fore;
         }
 
         if (flag & TPF_MEDIUM_COLOR) {
@@ -465,6 +470,12 @@ void Simple_Text_Print(char const* text, unsigned x, unsigned y, unsigned fore, 
     case TPF_LED:
         xspace -= 4;
         font = FontLEDPtr;
+        break;
+
+    case TPF_SMALL:
+        font = SmallFontPtr;
+        yspace += 2;
+        xspace -= 1;
         break;
 
     default:
