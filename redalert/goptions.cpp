@@ -42,6 +42,7 @@
 #include "gamedlg.h"
 #include "textbtn.h"
 #include "common/framelimit.h"
+#include "common/gitinfo.h"
 
 #ifdef FIXIT_VERSION_3 //	Stalemate games.
 #include "wolstrng.h"
@@ -316,7 +317,7 @@ void GameOptionsClass::Process(void)
             **	Display the version number at the bottom of the dialog box.
             */
 #ifndef REMASTER_BUILD
-            Fancy_Text_Print("%s\rV%s",
+            Fancy_Text_Print("%s\r%s%s",
                              (OptionX + OptionWidth) - (25 * RESFACTOR),
                              OptionY + OptionHeight
                                  - ((Session.Type == GAME_NORMAL) ? (32 * RESFACTOR) : (24 * RESFACTOR)),
@@ -324,7 +325,8 @@ void GameOptionsClass::Process(void)
                              TBLACK,
                              TPF_EFNT | TPF_NOSHADOW | TPF_RIGHT,
                              Scen.ScenarioName,
-                             Version_Name());
+                             GitShortSHA1,
+                             GitUncommittedChanges ? "-Dev" : "");
 #endif
 
             buttons->Draw_All();

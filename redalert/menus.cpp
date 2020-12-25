@@ -35,6 +35,7 @@
 
 #include "function.h"
 #include "common/framelimit.h"
+#include "common/gitinfo.h"
 #include <time.h>
 
 /*****************************
@@ -749,13 +750,14 @@ int Main_Menu(unsigned long)
             commands->Draw_All();
 #ifdef FIXIT_VERSION_3
 #ifndef REMASTER_BUILD
-            Fancy_Text_Print("V%s",
+            Fancy_Text_Print("%s%s",
                              d_dialog_x + d_dialog_w - (18 * RESFACTOR),
                              d_dialog_y + d_dialog_h - (5 * RESFACTOR),
                              GadgetClass::Get_Color_Scheme(),
                              TBLACK,
                              TPF_EFNT | TPF_NOSHADOW | TPF_RIGHT,
-                             Version_Name());
+                             GitShortSHA1,
+                             GitUncommittedChanges ? "-Dev" : "");
 #endif
 #else
             Fancy_Text_Print("V%s",
