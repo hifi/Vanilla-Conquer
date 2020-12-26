@@ -251,20 +251,8 @@ void GameOptionsClass::Process(void)
             /*
             **	Display the version number at the bottom of the dialog box.
             */
-#ifdef DEMO
             Version_Number();
-            Fancy_Text_Print("DEMO%s",
-                             (WindowList[WINDOW_EDITOR][WINDOWX] + WindowList[WINDOW_EDITOR][WINDOWWIDTH])
-                                 - 3 * resfactor,
-                             WindowList[WINDOW_EDITOR][WINDOWY] + WindowList[WINDOW_EDITOR][WINDOWHEIGHT]
-                                 - ((GameToPlay == GAME_NORMAL) ? (32 * resfactor) : (24 * resfactor)),
-                             DKGREY,
-                             TBLACK,
-                             TPF_6POINT | TPF_NOSHADOW | TPF_RIGHT,
-                             ScenarioName,
-                             VersionText);
-#else
-            Fancy_Text_Print("%s\r%s%s",
+            Fancy_Text_Print("%s\r%s",
                              (WindowList[WINDOW_EDITOR][WINDOWX] + WindowList[WINDOW_EDITOR][WINDOWWIDTH])
                                  - 3 * resfactor,
                              WindowList[WINDOW_EDITOR][WINDOWY] + WindowList[WINDOW_EDITOR][WINDOWHEIGHT]
@@ -273,9 +261,7 @@ void GameOptionsClass::Process(void)
                              TBLACK,
                              TPF_SMALL | TPF_RIGHT,
                              ScenarioName,
-                             GitShortSHA1,
-                             GitUncommittedChanges ? "-Dev" : "");
-#endif
+                             VersionText);
 
             buttons->Draw_All();
             TabClass::Hilite_Tab(0);

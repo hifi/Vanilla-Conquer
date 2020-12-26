@@ -826,50 +826,15 @@ int Main_Menu(unsigned long timeout)
             Set_Logic_Page(HidPage);
             Dialog_Box(D_DIALOG_X, D_DIALOG_Y, D_DIALOG_W, D_DIALOG_H);
             Draw_Caption(TXT_NONE, D_DIALOG_X, D_DIALOG_Y, D_DIALOG_W);
-#ifdef VIRGIN_CHEAT_KEYS
-#ifdef DEMO
+
             Version_Number();
-            Fancy_Text_Print("Demo%s",
-                             D_DIALOG_X + D_DIALOG_W - 5 * 2,
-                             D_DIALOG_Y + D_DIALOG_H - 10 * 2,
-                             DKGREY,
-                             TBLACK,
-                             TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
-                             VersionText);
-#else
-            Fancy_Text_Print("V.%d%s",
-                             D_DIALOG_X + D_DIALOG_W - 5 * 2,
-                             D_DIALOG_Y + D_DIALOG_H - 10 * 2,
-                             DKGREY,
-                             TBLACK,
-                             TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
-                             Version_Number(),
-                             VersionText,
-                             FOREIGN_VERSION_NUMBER);
-#endif
-//			Fancy_Text_Print("V.%d%s%02d", D_DIALOG_X+D_DIALOG_W-5, D_DIALOG_Y+D_DIALOG_H-10, DKGREY, TBLACK,
-//TPF_6POINT|TPF_FULLSHADOW|TPF_RIGHT, Version_Number(), VersionText, FOREIGN_VERSION_NUMBER);
-#else
-#ifdef DEMO
-            Version_Number();
-            Fancy_Text_Print("Demo%s",
-                             D_DIALOG_X + D_DIALOG_W - 5 * 2,
-                             D_DIALOG_Y + D_DIALOG_H - 10 * 2,
-                             DKGREY,
-                             TBLACK,
-                             TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
-                             VersionText);
-#else
-            Fancy_Text_Print("%s%s",
+            Fancy_Text_Print("%s",
                              D_DIALOG_X + D_DIALOG_W - 5 * 2,
                              D_DIALOG_Y + D_DIALOG_H - 10 * 2,
                              GREEN,
                              TBLACK,
-                             TPF_SMALL | TPF_RIGHT,
-                             GitShortSHA1,
-                             GitUncommittedChanges ? "-Dev" : "");
-#endif
-#endif
+                             TPF_6POINT | TPF_FULLSHADOW | TPF_RIGHT,
+                             VersionText);
 
             /*
             **	Copy the menu to the visible page.
