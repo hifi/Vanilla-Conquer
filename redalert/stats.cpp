@@ -562,11 +562,11 @@ void Send_Statistics_Packet(void)
         /*
         ** Red Alert version/build date
         */
-#ifdef _WIN32
         char version[128];
-        sprintf(version, "V%s", VerNum.Version_Name());
+        sprintf(version, "%s", VerNum.Version_Name());
         stats.Add_Field(FIELD_GAME_VERSION, (char*)version);
 
+#ifdef _WIN32
         char path_to_exe[280];
         FILETIME write_time; // File time is 64 bits
 
