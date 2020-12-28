@@ -36,7 +36,6 @@
 #ifdef SDL2_BUILD
 #include <SDL.h>
 extern SDL_Window* window;
-extern SDL_Renderer* renderer;
 #endif
 
 #ifndef min
@@ -119,7 +118,7 @@ WWMouseClass::WWMouseClass(GraphicViewPortClass* scr, int mouse_max_width, int m
 #ifdef SDL2_BUILD
     if (window) {
         int w, h;
-        SDL_GetRendererOutputSize(renderer, &w, &h);
+        SDL_GetWindowSize(window, &w, &h);
         MouseXScale = scr->Get_Width() / (float)w;
         MouseYScale = scr->Get_Height() / (float)h;
     }
