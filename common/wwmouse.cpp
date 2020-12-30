@@ -37,6 +37,7 @@
 #include <SDL.h>
 extern SDL_Window* window;
 extern SDL_Renderer* renderer;
+extern SDL_Palette* palette;
 #endif
 
 #ifndef min
@@ -123,6 +124,7 @@ WWMouseClass::WWMouseClass(GraphicViewPortClass* scr, int mouse_max_width, int m
         MouseXScale = scr->Get_Width() / (float)w;
         MouseYScale = scr->Get_Height() / (float)h;
     }
+    VisibleCursor = nullptr;
 #else
     MouseXScale = 1.0f;
     MouseYScale = 1.0f;
@@ -150,6 +152,12 @@ WWMouseClass::~WWMouseClass()
     ** Free up the windows mouse pointer movement
     */
     Clear_Cursor_Clip();
+
+#ifdef SDL2_BUILD
+    if (VisibleCursor) {
+        SDL_FreeCursor(VisibleCursor);
+    }
+#endif
 }
 
 void Block_Mouse(GraphicBufferClass* buffer)
@@ -217,8 +225,17 @@ void WWMouseClass::Clear_Cursor_Clip(void)
 
 void WWMouseClass::Process_Mouse(void)
 {
-    // ST - 1/3/2019 10:50AM
-#if !defined(REMASTER_BUILD)
+#if defined(SDL2_BUILD)
+    SDL_ShowCursor(!State);
+#if 0
+    static int hidden = 0;
+    if (!State && hidden) {
+        SDL_ShowCursor(hidden--);
+    } else if (State && !hidden) {
+        SDL_ShowCursor(hidden++);
+    }
+#endif
+#elif !defined(REMASTER_BUILD)
     int x, y;
 
     //
@@ -305,6 +322,7 @@ void* WWMouseClass::Set_Cursor(int xhotspot, int yhotspot, void* cursor)
     //
     // If the pointer to the cursor we got is invalid, or its the same as the
     // currently set cursor then just return.
+#ifndef SDL2_BUILD
     if (!cursor || cursor == PrevCursor)
         return (cursor);
 
@@ -321,7 +339,9 @@ void* WWMouseClass::Set_Cursor(int xhotspot, int yhotspot, void* cursor)
     // Now convert the shape to a mouse cursor with the given hotspots and
     // set it as our current mouse.
     //
+#endif
     void* retval = Set_Mouse_Cursor(xhotspot, yhotspot, (Cursor*)cursor);
+#ifndef SDL2_BUILD
     //
     // Show the mouse which will force it to appear with the new shape we
     // have assigned.
@@ -335,6 +355,7 @@ void* WWMouseClass::Set_Cursor(int xhotspot, int yhotspot, void* cursor)
     // Return the previous mouse cursor which as conveniantly passed back by
     // Set_Mouse_Cursor.
     //
+#endif
     return (retval);
 #endif
 }
@@ -342,7 +363,7 @@ void* WWMouseClass::Set_Cursor(int xhotspot, int yhotspot, void* cursor)
 void WWMouseClass::Low_Hide_Mouse()
 {
 // ST - 1/3/2019 10:50AM
-#ifndef REMASTER_BUILD
+#if !defined(REMASTER_BUILD) && !defined(SDL2_BUILD)
     if (!State) {
         if (MouseBuffX != -1 || MouseBuffY != -1) {
             if (Screen->Lock()) {
@@ -376,7 +397,7 @@ void WWMouseClass::Low_Show_Mouse(int x, int y)
     State--;
 
 // ST - 1/3/2019 10:50AM
-#ifndef REMASTER_BUILD
+#if !defined(REMASTER_BUILD) && !defined(SDL2_BUILD)
 
     //
     //	If the mouse is completely visible then draw it at its current
@@ -504,7 +525,7 @@ void WWMouseClass::Conditional_Show_Mouse(void)
 
 void WWMouseClass::Draw_Mouse(GraphicViewPortClass* scr)
 {
-#if defined(REMASTER_BUILD)
+#if defined(REMASTER_BUILD) || defined(SDL2_BUILD)
     scr;
     return;
 // ST - 1/3/2019 10:50AM
@@ -565,7 +586,7 @@ void WWMouseClass::Draw_Mouse(GraphicViewPortClass* scr)
 
 void WWMouseClass::Erase_Mouse(GraphicViewPortClass* scr, int forced)
 {
-#if defined(REMASTER_BUILD)
+#if defined(REMASTER_BUILD) || defined(SDL2_BUILD)
     // ST - 1/3/2019 10:50AM
     scr;
     forced;
@@ -585,7 +606,6 @@ void WWMouseClass::Erase_Mouse(GraphicViewPortClass* scr, int forced)
     //	lock the buffer.
     //
     if (!forced) {
-#if (0)
         if (scr->Lock()) {
             //
             // If the surface has not already been restore then restore it and erase the
@@ -601,7 +621,6 @@ void WWMouseClass::Erase_Mouse(GraphicViewPortClass* scr, int forced)
             //
             scr->Unlock();
         }
-#endif
     } else {
         //
         // If the surface has not already been restore then restore it and erase the
@@ -819,11 +838,11 @@ void* WWMouseClass::Set_Mouse_Cursor(int hotspotx, int hotspoty, Cursor* cursor)
 
     // Get the dimensions of our frame, mouse shp format can have variable
     // dimensions for each frame.
-    uncompsz = Get_Shape_Uncomp_Size(cursor);
-    width = Get_Shape_Width(cursor);
-    height = Get_Shape_Original_Height(cursor);
+    width = cursor != nullptr ? Get_Shape_Width(cursor) : 0;
+    height = cursor != nullptr ? Get_Shape_Original_Height(cursor) : 0;
 
-    if (width <= MaxWidth && height <= MaxHeight) {
+    if (cursor != nullptr && width <= MaxWidth && height <= MaxHeight) {
+        uncompsz = Get_Shape_Uncomp_Size(cursor);
         cursor_buff = (unsigned char*)MouseCursor;
         data_buff = (unsigned char*)(cursor);
         frame_flags = cursor->ShapeType;
@@ -909,10 +928,39 @@ void* WWMouseClass::Set_Mouse_Cursor(int hotspotx, int hotspoty, Cursor* cursor)
         MouseYHot = hotspoty;
         CursorHeight = height;
         CursorWidth = width;
+
+        result = PrevCursor;
+        PrevCursor = cursor;
     }
 
-    result = PrevCursor;
-    PrevCursor = cursor;
+#ifdef SDL2_BUILD
+    /*
+    ** Create a hardware cursor on-the-fly when it's change by the game. This can be optimized a lot.
+    */
+    SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, CursorWidth, CursorHeight, 32, SDL_PIXELFORMAT_RGBA8888);
+    SDL_Surface *scaled = SDL_CreateRGBSurfaceWithFormat(0, CursorWidth / MouseXScale, CursorHeight / MouseYScale, 32, SDL_PIXELFORMAT_RGBA8888);
+    SDL_Cursor *old = VisibleCursor;
+
+    for (int i = 0; i < CursorWidth * CursorHeight; i++) {
+        int idx = ((uint8_t *)MouseCursor)[i];
+
+        if (idx > 0) {
+            SDL_Color *sc = &palette->colors[idx];
+            ((uint32_t *)surface->pixels)[i] = SDL_MapRGBA(surface->format, sc->r, sc->g, sc->b, 0xFF);
+        }
+    }
+
+    SDL_BlitScaled(surface, nullptr, scaled, nullptr);
+
+    VisibleCursor = SDL_CreateColorCursor(scaled, MouseXHot / MouseXScale, MouseYHot / MouseYScale);
+    SDL_SetCursor(VisibleCursor);
+
+    if (old) {
+        SDL_FreeCursor(old);
+    }
+    SDL_FreeSurface(scaled);
+    SDL_FreeSurface(surface);
+#endif
 
     return result;
 }

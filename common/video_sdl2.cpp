@@ -49,7 +49,7 @@ extern WWKeyboardClass* Keyboard;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
-static SDL_Palette* palette;
+SDL_Palette* palette;
 
 class SurfaceMonitorClassDummy : public SurfaceMonitorClass
 {
@@ -216,6 +216,9 @@ void Set_DD_Palette(void* rpalette)
     }
 
     SDL_SetPaletteColors(palette, colors, 0, 256);
+
+    // apply palette effects to hw cursor
+    Set_Mouse_Cursor(0, 0, nullptr);
 }
 
 /***********************************************************************************************

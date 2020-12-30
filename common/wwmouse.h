@@ -35,6 +35,10 @@
 #include "gbuffer.h"
 #include "shape.h"
 
+#ifdef SDL2_BUILD
+#include <SDL.h>
+#endif
+
 #pragma pack(push, 1)
 typedef struct
 {
@@ -128,6 +132,10 @@ private:
 
     float MouseXScale;
     float MouseYScale;
+
+#ifdef SDL2_BUILD
+    SDL_Cursor *VisibleCursor;
+#endif
 };
 
 void Hide_Mouse(void);
