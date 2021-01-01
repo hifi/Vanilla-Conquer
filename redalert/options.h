@@ -35,15 +35,11 @@
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
-class OptionsClass
+#include "common/sharedoptions.h"
+
+class OptionsClass : public SharedOptionsClass
 {
 public:
-    enum
-    {
-        MAX_SCROLL_SETTING = 7,
-        MAX_SPEED_SETTING = 7
-    };
-
     OptionsClass(void);
 
     void One_Time(void);
@@ -73,13 +69,6 @@ public:
 
     void Set(void);
 
-    /*
-    **	This is actually the delay between game frames expressed as 1/60 of
-    **	a second. The default value is 4 (1/15 second).
-    */
-    unsigned int GameSpeed;
-
-    int ScrollRate;    // Distance to scroll.
     fixed Volume;      // Volume for sound effects.
     fixed ScoreVolume; // Volume for scores.
 #ifdef FIXIT_VERSION_3
@@ -89,9 +78,6 @@ public:
     fixed Tint;                        // Hue
     fixed Saturation;                  // Saturation
     fixed Contrast;                    // Value
-    unsigned AutoScroll : 1;           // Does map autoscroll?
-    unsigned IsScoreRepeat : 1;        // Score should repeat?
-    unsigned IsScoreShuffle : 1;       // Score list should shuffle?
     unsigned IsPaletteScroll : 1;      // Allow palette scrolling?
     unsigned ToggleSidebar : 1;        // Allow sidebar to be toggled?
     unsigned CounterstrikeEnabled : 1; // Allow counterstrike to be detected?

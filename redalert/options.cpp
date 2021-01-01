@@ -83,9 +83,7 @@ char const* const OptionsClass::HotkeyName = "WinHotkeys";
  *   07/21/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
 OptionsClass::OptionsClass(void)
-    : GameSpeed(3)
-    , ScrollRate(3)
-    , Volume(".40")
+    : Volume(".40")
     , // was .295
     ScoreVolume(".25")
     ,
@@ -97,9 +95,6 @@ OptionsClass::OptionsClass(void)
     , Tint(1, 2)
     , Saturation(1, 2)
     , Contrast(1, 2)
-    , AutoScroll(true)
-    , IsScoreRepeat(false)
-    , IsScoreShuffle(false)
     , IsPaletteScroll(true)
     , ToggleSidebar(true)
     , CounterstrikeEnabled(true)
@@ -156,6 +151,8 @@ OptionsClass::OptionsClass(void)
     , KeyTeam9(KN_9)
     , KeyTeam10(KN_0)
 {
+    GameSpeed = 3;
+    ScrollRate = 3;
 }
 
 /***********************************************************************************************

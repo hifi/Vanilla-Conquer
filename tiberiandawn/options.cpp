@@ -86,15 +86,11 @@ OptionsClass::OptionsClass(void)
     Contrast = 0x80;
     Tint = 0x80;
     Brightness = 0x80;
-    AutoScroll = true;
 #if (GERMAN | FRENCH)
     IsDeathAnnounce = true;
 #else
     IsDeathAnnounce = false;
 #endif
-    IsScoreRepeat = false;
-    IsScoreShuffle = false;
-    IsFreeScroll = false;
 }
 
 /***********************************************************************************************

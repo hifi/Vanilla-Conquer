@@ -68,6 +68,7 @@ set(COMMON_SRC
     readline.cpp
     rect.cpp
     rndstraw.cpp
+    sharedoptions.cpp
     sha.cpp
     shape.cpp
     shapipe.cpp
@@ -152,13 +153,14 @@ file(GLOB_RECURSE COMMON_HEADERS "*.h")
 add_library(common STATIC ${COMMON_SRC} ${COMMON_HEADERS})
 target_link_libraries(common PUBLIC ${COMMON_LIBS})
 target_include_directories(common PUBLIC .)
-target_compile_definitions(common PRIVATE FIXIT_FAST_LOAD)
+target_compile_definitions(common PRIVATE FIXIT_FAST_LOAD COMMON)
 # Make build check state of git to check for uncommitted changes.
 add_dependencies(common check_git)
 
 if(BUILD_REMASTERTD OR BUILD_REMASTERRA)
     add_library(commonr STATIC ${COMMONR_SRC})
     target_compile_definitions(commonr PUBLIC $<$<CONFIG:Debug>:_DEBUG> ${REMASTER_DEFS})
+    target_compile_definitions(commonr PRIVATE COMMON)
     target_link_libraries(commonr PUBLIC common ${REMASTER_LIBS})
 endif()
 
@@ -166,6 +168,7 @@ endif()
 if(BUILD_VANILLATD OR BUILD_VANILLARA)
     add_library(commonv STATIC ${COMMONV_SRC})
     target_compile_definitions(commonv PUBLIC $<$<CONFIG:Debug>:_DEBUG> ${VANILLA_DEFS})
+    target_compile_definitions(commonv PRIVATE COMMON)
     target_link_libraries(commonv PUBLIC common ${VANILLA_LIBS})
     if(DSOUND)
         target_compile_definitions(commonv PUBLIC DSOUND_BUILD)
