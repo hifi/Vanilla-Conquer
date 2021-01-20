@@ -140,7 +140,7 @@ void UDPInterfaceClass::Set_Broadcast_Address(void* address)
  *=============================================================================================*/
 bool UDPInterfaceClass::Open_Socket(SOCKET)
 {
-    LINGER ling;
+    linger ling;
     struct sockaddr_in addr;
 
     /*
@@ -167,7 +167,7 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
     addr.sin_port = (unsigned short)hton16((unsigned short)PlanetWestwoodPortNumber);
     addr.sin_addr.s_addr = hton32(INADDR_ANY);
 
-    if (bind(Socket, (LPSOCKADDR)&addr, sizeof(addr)) == SOCKET_ERROR) {
+    if (bind(Socket, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
         Close_Socket();
         return (false);
     }
@@ -209,7 +209,7 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
                 (address & 0xff00) >> 8,
                 (address & 0xff0000) >> 16,
                 (address & 0xff000000) >> 24);
-        OutputDebugString(temp);
+        fprintf(stderr, temp);
 
         unsigned char* a = new unsigned char[4];
         *((unsigned long*)a) = address;
@@ -221,7 +221,7 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
     */
     ling.l_onoff = 0;  // linger off
     ling.l_linger = 0; // timeout in seconds (ie close now)
-    setsockopt(Socket, SOL_SOCKET, SO_LINGER, (LPSTR)&ling, sizeof(ling));
+    setsockopt(Socket, SOL_SOCKET, SO_LINGER, (char*)&ling, sizeof(ling));
 
     WinsockInterfaceClass::Set_Socket_Options();
 
@@ -274,11 +274,12 @@ void UDPInterfaceClass::Broadcast(void* buffer, int buffer_len)
         */
         OutBuffers.Add(packet);
 
+#if defined _WIN32 && !defined SDL2_BUILD
         /*
         ** Send a message to ourselves so that we can initiate a write if Winsock is idle.
         */
         SendMessage(MainWindow, Protocol_Event_Message(), 0, (LONG)FD_WRITE);
-
+#endif
         /*
         ** Make sure the message loop gets called.
         */
@@ -300,6 +301,7 @@ void UDPInterfaceClass::Broadcast(void* buffer, int buffer_len)
  * HISTORY:                                                                                    *
  *    3/20/96 3:05PM ST : Created                                                              *
  *=============================================================================================*/
+#if defined _WIN32 && !defined SDL2_BUILD
 long UDPInterfaceClass::Message_Handler(HWND, UINT message, UINT, LONG lParam)
 {
     struct sockaddr_in addr;
@@ -336,7 +338,7 @@ long UDPInterfaceClass::Message_Handler(HWND, UINT message, UINT, LONG lParam)
         ** Call the Winsock recvfrom function to get the outstanding packet.
         */
         addr_len = sizeof(addr);
-        rc = recvfrom(Socket, (char*)ReceiveBuffer, sizeof(ReceiveBuffer), 0, (LPSOCKADDR)&addr, &addr_len);
+        rc = recvfrom(Socket, (char*)ReceiveBuffer, sizeof(ReceiveBuffer), 0, (sockaddr*)&addr, &addr_len);
         if (rc == SOCKET_ERROR) {
             Clear_Socket_Error(Socket);
             return (0);
@@ -408,7 +410,7 @@ long UDPInterfaceClass::Message_Handler(HWND, UINT message, UINT, LONG lParam)
         ** at this time. In this case, we clear the socket error and just exit. Winsock will
         ** send us another WRITE message when it is ready to receive more data.
         */
-        rc = sendto(Socket, (const char*)packet->Buffer, packet->BufferLen, 0, (LPSOCKADDR)&addr, sizeof(addr));
+        rc = sendto(Socket, (const char*)packet->Buffer, packet->BufferLen, 0, (sockaddr*)&addr, sizeof(addr));
 
         if (rc == SOCKET_ERROR) {
             if (LastSocketError != WSAEWOULDBLOCK) {
@@ -427,5 +429,115 @@ long UDPInterfaceClass::Message_Handler(HWND, UINT message, UINT, LONG lParam)
 
     return (0);
 }
+#else
+long UDPInterfaceClass::Message_Handler()
+{
+    struct sockaddr_in addr;
+    int rc;
+    socklen_t addr_len;
+    WinsockBufferType* packet;
+    struct timeval tv;
+
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+
+    /*
+    ** Check if socket has data it would like to give us or can accept any data
+    */
+    fd_set* read_set = Get_Readset();
+    fd_set* write_set = Get_Writeset();
+    rc = select(Socket + 1, read_set, write_set, nullptr, &tv);
+
+    if (rc >= 0) {
+        if (FD_ISSET(Socket, read_set)) {
+            while (true) {
+                addr_len = sizeof(addr);
+                rc = recvfrom(Socket, (char*)ReceiveBuffer, sizeof(ReceiveBuffer), 0, (sockaddr*)&addr, &addr_len);
+
+                /*
+                ** rc is the number of bytes received.
+                */
+                if (rc == SOCKET_ERROR) {
+                    if (LastSocketError != WSAEWOULDBLOCK) {
+                        Clear_Socket_Error(Socket);
+                    }
+
+                    break;
+                } else if (rc > 0) {
+                    bool remote = true;
+
+                    /*
+                    ** Make sure this packet didn't come from us. If it did then throw it away.
+                    */
+                    for (int i = 0; i < LocalAddresses.Count(); i++) {
+                        if (!memcmp(LocalAddresses[i], &addr.sin_addr.s_addr, 4)) {
+                            remote = false;
+                            break;
+                        }
+                    }
+
+                    if (remote) {
+                        /*
+                        ** Create a new buffer and store this packet in it.
+                        */
+                        packet = new WinsockBufferType;
+                        packet->BufferLen = rc;
+                        memcpy(packet->Buffer, ReceiveBuffer, rc);
+                        memset(packet->Address, 0, sizeof(packet->Address));
+                        memcpy(packet->Address + 4, &addr.sin_addr.s_addr, 4);
+                        InBuffers.Add(packet);
+                    }
+                }
+            }
+        }
+
+        if (FD_ISSET(Socket, write_set)) {
+            /*
+            ** If there are no packets waiting to be sent then bail.
+            */
+            while (OutBuffers.Count() != 0) {
+                int packetnum = 0;
+
+                /*
+                ** Get a pointer to the packet.
+                */
+                packet = OutBuffers[packetnum];
+
+                /*
+                ** Set up the address structure of the outgoing packet
+                */
+                addr.sin_family = AF_INET;
+                addr.sin_port = hton16(PlanetWestwoodPortNumber);
+                memcpy(&addr.sin_addr.s_addr, packet->Address + 4, 4);
+
+                /*
+                ** Send it.
+                ** If we get a WSAWOULDBLOCK error it means that Winsock is unable to accept the packet
+                ** at this time. In this case, we clear the socket error and just exit. 
+                */
+                rc = sendto(Socket, (const char*)packet->Buffer, packet->BufferLen, 0, (sockaddr*)&addr, sizeof(addr));
+
+                if (rc == SOCKET_ERROR) {
+                    if (LastSocketError != WSAEWOULDBLOCK) {
+                        Clear_Socket_Error(Socket);
+                    }
+
+                    break;
+                } else {
+                    /*
+                    ** Delete the sent packet.
+                    */
+                    OutBuffers.Delete(packetnum);
+                    delete packet;
+                }
+            }
+        }
+    } else {
+        Clear_Socket_Error(Socket);
+    }
+
+    return 0;
+}
+#endif
 
 #endif // NETWORKING
