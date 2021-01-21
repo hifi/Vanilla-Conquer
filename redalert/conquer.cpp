@@ -1416,7 +1416,7 @@ void Call_Back(void)
 
 void IPX_Call_Back(void)
 {
-#if (0) // PG
+#ifndef REMASTER_BUILD // PG
     Ipx.Service();
 
     /*
