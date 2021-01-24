@@ -261,8 +261,6 @@ void GScreenClass::Flag_To_Redraw(bool complete)
  *=============================================================================================*/
 void GScreenClass::Input(KeyNumType& key, int& x, int& y)
 {
-    key = Keyboard->Check();
-
     x = Get_Mouse_X();
     y = Get_Mouse_Y();
 
@@ -284,6 +282,7 @@ void GScreenClass::Input(KeyNumType& key, int& x, int& y)
         Set_Logic_Page(oldpage);
 
     } else {
+        key = Keyboard->Check();
 
         if (key != 0) {
             key = Keyboard->Get();
