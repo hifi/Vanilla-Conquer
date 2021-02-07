@@ -161,6 +161,17 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
     }
 
     /*
+    ** Broadcast to all local networks.
+    */
+    int yes = 1;
+    if (setsockopt(Socket, SOL_SOCKET, SO_BROADCAST, (void*)&yes, sizeof(yes)) < 0) {
+        DBG_LOG("setsockopt failed: %s", strerror(errno));
+        Close_Socket();
+        return (false);
+    }
+    Set_Broadcast_Address((void*)"255.255.255.255");
+
+    /*
     ** Bind our UDP socket to our UDP port number
     */
     addr.sin_family = AF_INET;
@@ -245,6 +256,7 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
  *=============================================================================================*/
 void UDPInterfaceClass::Broadcast(void* buffer, int buffer_len)
 {
+    DBG_LOG("Broadcasting to %d addresses", BroadcastAddresses.Count());
     for (int i = 0; i < BroadcastAddresses.Count(); i++) {
 
         /*
@@ -458,12 +470,14 @@ long UDPInterfaceClass::Message_Handler()
                 ** rc is the number of bytes received.
                 */
                 if (rc == SOCKET_ERROR) {
+                    DBG_LOG("%s", strerror(errno));
                     if (LastSocketError != WSAEWOULDBLOCK) {
                         Clear_Socket_Error(Socket);
                     }
 
                     break;
                 } else if (rc > 0) {
+                    DBG_LOG("got %d bytes", rc);
                     bool remote = true;
 
                     /*
@@ -488,6 +502,7 @@ long UDPInterfaceClass::Message_Handler()
                         InBuffers.Add(packet);
                     }
                 }
+                break;
             }
         }
 
@@ -506,6 +521,7 @@ long UDPInterfaceClass::Message_Handler()
                 /*
                 ** Set up the address structure of the outgoing packet
                 */
+                memset(&addr, 0, sizeof(addr));
                 addr.sin_family = AF_INET;
                 addr.sin_port = hton16(PlanetWestwoodPortNumber);
                 memcpy(&addr.sin_addr.s_addr, packet->Address + 4, 4);
@@ -518,12 +534,14 @@ long UDPInterfaceClass::Message_Handler()
                 rc = sendto(Socket, (const char*)packet->Buffer, packet->BufferLen, 0, (sockaddr*)&addr, sizeof(addr));
 
                 if (rc == SOCKET_ERROR) {
+                    DBG_LOG("error sending to %s: %s (%d)", inet_ntoa(addr.sin_addr), strerror(errno), errno);
                     if (LastSocketError != WSAEWOULDBLOCK) {
                         Clear_Socket_Error(Socket);
                     }
 
                     break;
                 } else {
+                    DBG_LOG("sendto success\n");
                     /*
                     ** Delete the sent packet.
                     */

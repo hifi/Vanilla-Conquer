@@ -1437,9 +1437,6 @@ bool Init_Network(void)
 {
     NetNumType net;
     NetNodeType node;
-#ifdef WINSOCK_IPX
-    assert(PacketTransport != NULL);
-#endif // WINSOCK_IPX
 
     //------------------------------------------------------------------------
     //	This call allocates all necessary queue buffers, allocates Real-mode

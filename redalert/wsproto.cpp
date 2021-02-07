@@ -483,6 +483,7 @@ void WinsockInterfaceClass::WriteTo(void* buffer, int buffer_len, void* address)
  *=============================================================================================*/
 void WinsockInterfaceClass::Broadcast(void* buffer, int buffer_len)
 {
+    DBG_LOG("WSI: Broadcast");
 
     /*
     ** Create a temporary holding area for the packet.
